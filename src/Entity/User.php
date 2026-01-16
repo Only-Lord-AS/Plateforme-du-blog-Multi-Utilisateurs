@@ -60,6 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $bio = null;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $interests = null;
+
     public function getAvatar(): ?string
     {
         return $this->avatar;
@@ -249,6 +252,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             }
         }
 
+        return $this;
+    }
+
+    public function getInterests(): ?array
+    {
+        return $this->interests;
+    }
+
+    public function setInterests(?array $interests): static
+    {
+        $this->interests = $interests;
         return $this;
     }
 }
