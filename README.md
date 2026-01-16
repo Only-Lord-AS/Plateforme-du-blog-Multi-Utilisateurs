@@ -6,12 +6,12 @@ This project is all about bringing people together through content—whether you
 ## ✨ Cool Stuff Inside
 - **Multi-User System:** Everyone gets their own profile and space. Use it however you like!
 - **Interactive Comments:** Mention your friends with the `@` system and keep the conversation going.
-- **Follow Flow:** Found someone cool? Follow them to stay updated on their latest posts.
+- **Follow Flow:** Found someone's articles/ideas cool? Follow them to stay updated on their latest posts.
 - **Premium Design:** Smooth animations because a blog should look as good as it reads.
 - **Admin Dashboard:** Total control for admins to manage users, articles, and see what's trending.
 
 ## 🛠️ The Tech Side
-- **Backend:** Symfony (PHP)
+- **Backend:** Symfony 7.2 (PHP 8.2)
 - **Frontend:** Vanilla JS & Twig (Keeping it fast and clean!)
 - **Database:** MySQL (PhpMyAdmin)
 
@@ -22,5 +22,5 @@ This project is all about bringing people together through content—whether you
 4. Run `php bin/console doctrine:migrations:migrate`.
 5. Start the server (e.g., `symfony server:start`) and enjoy!
 ---
-*Made by A.S with❤️ for the community.*
+*Made by A.S for the community.*
 All Thx to @aymenmarjan for helping 💪🏽 
