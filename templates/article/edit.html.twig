@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'articles.form_edit_title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="page-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card-modern">
+                    <div class="form-card-header edit-header">
+                        <div class="form-icon">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h1 class="form-title">{{ 'articles.form_edit_title'|trans }}</h1>
+                        <p class="form-subtitle">{{ article.title }}</p>
+                    </div>
+
+                    <div class="form-card-body">
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+
+                        {% include 'article/_form.html.twig' %}
+
+                        <div class="form-footer">
+                            <a href="{{ path('app_article_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i>
+                                {{ 'articles.form_back_link'|trans }}
+                            </a>
+                        </div>
+
+                        <!-- Danger Zone -->
+                        <div class="danger-zone">
+                            <h5 class="danger-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ 'msg.confirm_delete'|trans }}
+                            </h5>
+                            <p class="danger-text">This action cannot be undone.</p>
+                            {% include 'article/_delete_form.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

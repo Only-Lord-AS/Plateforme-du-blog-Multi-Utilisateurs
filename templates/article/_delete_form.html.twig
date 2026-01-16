@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_article_delete', {'id': article.id, '_locale': app.request.locale}) }}" onsubmit="return confirm('{{ 'msg.confirm_delete'|trans }}');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+    <button class="btn btn-danger btn-sm" type="submit">{{ 'form.delete'|trans }}</button>
+</form>

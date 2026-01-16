@@ -9,3 +9,42 @@
 
 controllers:
     resource: routing.controllers
+    prefix: '/{_locale}'
+    requirements:
+        _locale: 'en|fr|ar'
+    defaults:
+        _locale: 'en'
+
+home:
+    path: /{_locale}/
+    controller: App\Controller\HomeController::index
+    requirements:
+        _locale: 'en|fr|ar'
+    defaults:
+        _locale: 'en'
+    
+admin_comments:
+    path: /{_locale}/admin/comments
+    controller: App\Controller\AdminController::comments
+    requirements:
+        _locale: 'en|fr|ar'
+    defaults:
+        _locale: 'en'
+
+# Redirect routes for accessing pages without locale prefix
+login_redirect:
+    path: /login
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: app_login
+        _locale: en
+    methods: [GET]
+
+register_redirect:
+    path: /register
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: app_register
+        _locale: en
+    methods: [GET]
+

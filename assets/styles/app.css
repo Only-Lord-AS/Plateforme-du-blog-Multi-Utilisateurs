@@ -1,3 +1,16 @@
 body {
     background-color: skyblue;
 }
+
+.like-btn, .dislike-btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.like-btn:hover, .dislike-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.clicked {
+    transform: scale(0.9);
+}

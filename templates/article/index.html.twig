@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'articles.title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="page-section" style="padding-top: 50px;">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header d-flex justify-content-between align-items-center mb-5">
+            <div class="page-header-content">
+                <h1 class="page-title h2 fw-bold text-white mb-2">
+                    <i class="fas fa-newspaper me-2 text-primary"></i>
+                    {{ 'articles.title'|trans }}
+                </h1>
+                <p class="page-subtitle text-white-50">{{ 'app.tagline'|trans }}</p>
+            </div>
+            {% if app.user %}
+                <a href="{{ path('app_article_new', {'_locale': app.request.locale}) }}" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm btn-glow">
+                    <i class="fas fa-plus me-2"></i>
+                    {{ 'articles.create_btn'|trans }}
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Flash Messages -->
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show mb-4 rounded-3 border-0 shadow-sm" role="alert" style="background: rgba(40, 167, 69, 0.2); color: #75b798;">
+                <i class="fas fa-check-circle me-2"></i>
+                {{ message|trans }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show mb-4 rounded-3 border-0 shadow-sm" role="alert" style="background: rgba(220, 53, 69, 0.2); color: #ea868f;">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{ message|trans }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+
+        {% if articles is empty %}
+            <div class="empty-state-card text-center p-5 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                <div class="empty-icon display-1 mb-3">📝</div>
+                <h3 class="text-white">{{ 'articles.empty_title'|trans }}</h3>
+                <p class="text-white-50">{{ 'articles.empty_message'|trans }}</p>
+                {% if app.user %}
+                    <a href="{{ path('app_article_new', {'_locale': app.request.locale}) }}" class="btn btn-outline-light mt-3">
+                        <i class="fas fa-plus me-2"></i>
+                        {{ 'articles.create_btn'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        {% else %}
+            <!-- Articles Feed -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="blog-feed-premium d-flex flex-column gap-4">
+                        {% for article in articles %}
+                            <div class="blog-card-premium feed-card bg-glass border-0 shadow-lg overflow-hidden position-relative" style="border-radius: 20px; background: rgba(30, 30, 40, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);">
+                                
+                                {# 1. Header: Author & Date #}
+                                <div class="card-header-premium p-4 d-flex align-items-center gap-3" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <div class="avatar-circle rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm overflow-hidden" style="width: 48px; height: 48px; background: var(--primary-gradient);">
+                                        {% if article.author.avatar %}
+                                            <img src="{{ asset('uploads/avatars/' ~ article.author.avatar) }}" alt="{{ article.author.email }}" class="w-100 h-100 object-fit-cover">
+                                        {% else %}
+                                            <i class="fas fa-user"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold text-white">
+                                            <a href="{{ path('app_profile_show', {id: article.author.id, _locale: app.request.locale}) }}" class="text-white text-decoration-none hover-underline">
+                                                {{ article.author.nickname|default(article.author.email|split('@')[0])|capitalize }}
+                                            </a>
+                                        </div>
+                                        <div class="text-white-50 small">{{ article.createdAt|date('d M Y, H:i') }}</div>
+                                    </div>
+                                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-2 fw-normal">
+                                        {{ article.category.name }}
+                                    </span>
+                                </div>
+
+                                {# 2. Media Preview #}
+                                {% if article.mediaType == 'image' and article.mediaFilename %}
+                                    <div class="blog-image-premium position-relative" style="min-height: 300px; background: #000;">
+                                        <img src="{{ asset('uploads/media/' ~ article.mediaFilename) }}" alt="{{ article.title }}" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0">
+                                    </div>
+                                {% endif %}
+
+                                {# 3. Content #}
+                                <div class="blog-content-premium p-4">
+                                    <h3 class="h4 fw-bold text-white mb-3">
+                                        <a href="{{ path('app_article_show', {id: article.id, _locale: app.request.locale}) }}" class="text-white text-decoration-none">
+                                            {{ article.title }}
+                                        </a>
+                                    </h3>
+                                    <p class="text-white-75 mb-0" style="line-height: 1.6;">
+                                        {{ article.content|slice(0, 200) }}{% if article.content|length > 200 %}...{% endif %}
+                                    </p>
+                                </div>
+
+                                {# 4. Validation/Actions Footer #}
+                                <div class="card-footer-premium p-3 px-4 d-flex justify-content-between align-items-center" style="background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05);">
+                                    <div class="engagement-metrics d-flex gap-4 text-white-50">
+                                        <span class="metric" title="Likes">
+                                            <i class="fas fa-thumbs-up me-1 text-primary"></i>
+                                            {{ article.likes|filter(l => l.isLike)|length }}
+                                        </span>
+                                        <span class="metric" title="Comments">
+                                            <i class="fas fa-comment me-1 text-info"></i>
+                                            {{ article.comments|filter(c => c.isApproved)|length }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="actions d-flex gap-2">
+                                        <a href="{{ path('app_article_show', {id: article.id, _locale: app.request.locale}) }}" class="btn btn-sm btn-outline-light rounded-pill px-3">
+                                            {{ 'articles.read_more'|trans }}
+                                        </a>
+                                        {% if app.user and (app.user == article.author or is_granted('ROLE_ADMIN')) %}
+                                            <a href="{{ path('app_article_edit', {'id': article.id, '_locale': app.request.locale}) }}" class="btn btn-sm btn-outline-warning rounded-circle" style="width: 32px; height: 32px; padding: 0; line-height: 30px;">
+                                                <i class="fas fa-edit small"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_article_delete', {'id': article.id, '_locale': app.request.locale}) }}" style="display:inline" onsubmit="return confirm('{{ 'msg.confirm_delete'|trans }}');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                                <button class="btn btn-sm btn-outline-danger rounded-circle" type="submit" style="width: 32px; height: 32px; padding: 0; line-height: 30px;">
+                                                    <i class="fas fa-trash small"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

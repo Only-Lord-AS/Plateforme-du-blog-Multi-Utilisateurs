@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="hero-premium">
+  <div class="floating-shape shape-1"></div>
+  <div class="floating-shape shape-2"></div>
+  <div class="hero-content-premium">
+    <h1 class="hero-title-premium">
+      <span class="typewriter-text">{{ 'hero.title'|trans }}</span>
+    </h1>
+    <p class="hero-subtitle-premium">
+      <span class="typewriter-text-delay">{{ 'hero.subtitle'|trans }}</span>
+    </p>
+    {% if not app.user %}
+      <!-- Hero buttons removed as per user request -->
+    {% endif %}
+  </div>
+</section>
+
+<section class="blog-section-premium">
+  <div class="container">
+    <div class="row">
+      <!-- Sidebar Categories (Aligned Top) -->
+      <div class="col-lg-3 mb-4">
+        <div class="category-sidebar-premium sticky-top" style="top: 2rem; z-index: 10;">
+          <h4 class="sidebar-title mb-4" style="color: white; font-weight: 600;">{{ 'categories.title'|trans }}</h4>
+          <div class="vertical-category-nav">
+            <button class="category-sidebar-btn active" data-category="all" onclick="filterArticles('all', this)">
+              <span class="filter-icon">🏠</span>
+              <span class="filter-label">{{ 'categories.all'|trans }}</span>
+              <i class="fas fa-chevron-right arrow-icon"></i>
+            </button>
+            <button class="category-sidebar-btn" data-category="technology" onclick="filterArticles('technology', this)">
+              <span class="filter-icon">💻</span>
+              <span class="filter-label">{{ 'categories.tech'|trans }}</span>
+              <i class="fas fa-chevron-right arrow-icon"></i>
+            </button>
+            <button class="category-sidebar-btn" data-category="travel" onclick="filterArticles('travel', this)">
+              <span class="filter-icon">✈️</span>
+              <span class="filter-label">{{ 'categories.travel'|trans }}</span>
+              <i class="fas fa-chevron-right arrow-icon"></i>
+            </button>
+            <button class="category-sidebar-btn" data-category="food" onclick="filterArticles('food', this)">
+              <span class="filter-icon">🍽️</span>
+              <span class="filter-label">{{ 'categories.food'|trans }}</span>
+              <i class="fas fa-chevron-right arrow-icon"></i>
+            </button>
+            <button class="category-sidebar-btn" data-category="lifestyle" onclick="filterArticles('lifestyle', this)">
+              <span class="filter-icon">✨</span>
+              <span class="filter-label">{{ 'categories.lifestyle'|trans }}</span>
+              <i class="fas fa-chevron-right arrow-icon"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Articles Feed (Right Column) -->
+      <div class="col-lg-9">
+        <h2 class="section-title-premium mb-4">{{ 'articles.title'|trans }}</h2>
+
+        {% if articles is empty %}
+          <div class="empty-state-card">
+            <div class="empty-icon">📝</div>
+            <h3>{{ 'articles.empty_title'|trans }}</h3>
+            <p>{{ 'articles.empty_message'|trans }}</p>
+            {% if app.user %}
+              <a href="{{ path('app_article_new', {'_locale': app.request.locale}) }}" class="btn btn-primary btn-lg">{{ 'articles.create_btn'|trans }}</a>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="blog-feed-premium" id="articles-grid" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            {% for article in articles %}
+              {% set cat_emoji = '📝' %}
+              {% if 'tech' in article.category.name|lower or 'technology' in article.category.name|lower %}{% set cat_emoji = '💻' %}
+              {% elseif 'travel' in article.category.name|lower %}{% set cat_emoji = '✈️' %}
+              {% elseif 'food' in article.category.name|lower or 'gastronomy' in article.category.name|lower %}{% set cat_emoji = '🍽️' %}
+              {% elseif 'lifestyle' in article.category.name|lower %}{% set cat_emoji = '✨' %}
+              {% endif %}
+
+              <div class="blog-card-premium feed-card" data-category="{{ article.category.name|lower }}" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 15px; margin-bottom: 2rem;">
+                
+                {# 1. Username and Date #}
+                <div class="card-header-premium" style="padding: 1rem; display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.02);">
+                    <div class="avatar-circle rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm overflow-hidden" style="width: 40px; height: 40px; background: var(--primary-gradient);">
+                        {% if article.author.avatar %}
+                            <img src="{{ asset('uploads/avatars/' ~ article.author.avatar) }}" alt="{{ article.author.email }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <i class="fas fa-user"></i>
+                        {% endif %}
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; font-size: 1rem;">
+                            <a href="{{ path('app_profile_show', {id: article.author.id, _locale: app.request.locale}) }}" style="color: inherit; text-decoration: none;">
+                                {{ article.author.nickname|default(article.author.email|split('@')[0])|capitalize }}
+                            </a>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">{{ article.createdAt|date('d M Y, H:i') }}</div>
+                    </div>
+                    <span class="category-tag-premium" style="font-size: 0.8rem;">{{ article.category.name }}</span>
+                </div>
+
+                {# 2. Photo / File Preview #}
+                {# 2. Photo / File Preview #}
+                {% if article.mediaType == 'image' and article.mediaFilename %}
+                <div class="blog-image-premium" style="width: 100%; height: auto; min-height: 250px; max-height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(135deg, {{ ['#667eea 0%, #764ba2', '#f093fb 0%, #f5576c', '#4facfe 0%, #00f2fe', '#fa709a 0%, #fee140', '#30cfd0 0%, #330867', '#a8edea 0%, #fed6e3'][loop.index0 % 6] }} 100%);">
+                      <img src="{{ asset('uploads/media/' ~ article.mediaFilename) }}" alt="{{ article.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                {% endif %}
+
+                {# 3. Context (Content) #}
+                <div class="blog-content-premium" style="padding: 1.5rem;">
+                  <h3 class="blog-title-premium" style="font-size: 1.5rem; margin-bottom: 0.5rem;">{{ article.title }}</h3>
+                  <p class="blog-excerpt-premium">{{ article.content|slice(0, 200) }}{% if article.content|length > 200 %}...{% endif %}</p>
+                </div>
+
+                {# 4. Like / Dislike / Comments Bar #}
+                <div class="blog-footer-premium" style="padding: 0.8rem 1.5rem; border-top: 1px solid var(--border-glass); background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between;">
+                    <div class="engagement-metrics-premium" style="display: flex; gap: 1.5rem;">
+                      <span class="metric-premium" title="Likes">
+                        <i class="fas fa-thumbs-up" style="color: var(--accent-color);"></i>
+                        <span class="count-premium ms-1">{{ article.likes|filter(l => l.isLike)|length }}</span>
+                      </span>
+                      <span class="metric-premium" title="Comments">
+                        <i class="fas fa-comment"></i>
+                        <span class="count-premium ms-1">{{ article.comments|filter(c => c.isApproved)|length }}</span>
+                      </span>
+                    </div>
+                    <a href="{{ path('app_article_show', {id: article.id, _locale: app.request.locale}) }}" class="btn btn-sm btn-nav-link-primary">{{ 'articles.read_more'|trans }}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-premium">
+  <div class="container">
+    <div class="newsletter-card-premium">
+      <h3 class="newsletter-title-premium">{{ 'newsletter.title'|trans }}</h3>
+      <p class="newsletter-desc-premium">{{ 'newsletter.description'|trans }}</p>
+      <form class="newsletter-form-premium" onsubmit="handleNewsletter(event)">
+        <input type="email" class="newsletter-input-premium" placeholder="{{ 'newsletter.placeholder'|trans }}" required>
+        <button type="submit" class="newsletter-btn-premium">{{ 'newsletter.submit'|trans }}</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+// Category Filter Function
+function filterArticles(category, button) {
+    // Update active button
+    document.querySelectorAll('.category-sidebar-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    button.classList.add('active');
+    
+    // Filter articles
+    const articles = document.querySelectorAll('.blog-card-premium');
+    articles.forEach(article => {
+        const articleCategory = article.dataset.category;
+        
+        if (category === 'all') {
+            article.style.display = 'block';
+            article.style.animation = 'fadeIn 0.3s ease';
+        } else if (articleCategory && articleCategory.toLowerCase().includes(category.toLowerCase())) {
+            article.style.display = 'block';
+            article.style.animation = 'fadeIn 0.3s ease';
+        } else {
+            article.style.display = 'none';
+        }
+    });
+}
+</script>
+{% endblock %}

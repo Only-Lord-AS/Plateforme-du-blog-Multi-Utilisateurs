@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.users'|trans }}{% endblock %}
+
+{% block body %}
+<section class="page-section">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">
+                    <i class="fas fa-users-cog"></i>
+                    {{ 'admin.users'|trans }}
+                </h1>
+                <p class="page-subtitle">{{ usersData|length }} {{ 'admin.total_users'|trans }}</p>
+            </div>
+            <a href="{{ path('admin_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-outline-light">
+                <i class="fas fa-arrow-left"></i>
+                {{ 'admin.dashboard'|trans }}
+            </a>
+        </div>
+
+        <!-- Flash Messages -->
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+
+        {% if usersData is empty %}
+            <div class="empty-state-card">
+                <div class="empty-icon">👥</div>
+                <h3>No Users Found</h3>
+                <p>There are no registered users yet.</p>
+            </div>
+        {% else %}
+            <!-- Users Grid -->
+            <div class="users-grid">
+                {% for data in usersData %}
+                    <div class="user-card">
+                        <div class="user-card-header">
+                            <div class="user-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="user-info">
+                                <h4 class="user-email">
+                                    <a href="{{ path('app_profile_show', {id: data.user.id, _locale: app.request.locale}) }}" style="color: inherit; text-decoration: none;">
+                                        {{ data.user.email }}
+                                    </a>
+                                </h4>
+                                <span class="user-role {% if 'ROLE_ADMIN' in data.user.roles %}admin{% endif %}">
+                                    {% if 'ROLE_ADMIN' in data.user.roles %}
+                                        <i class="fas fa-crown"></i> Admin
+                                    {% else %}
+                                        <i class="fas fa-user"></i> User
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="user-stats">
+                            <div class="user-stat">
+                                <span class="stat-number">{{ data.articlesCount }}</span>
+                                <span class="stat-text">{{ 'admin.total_articles'|trans }}</span>
+                            </div>
+                            <div class="user-stat">
+                                <span class="stat-number">{{ data.commentsCount }}</span>
+                                <span class="stat-text">{{ 'articles.comments'|trans }}</span>
+                            </div>
+                            <div class="user-stat">
+                                <span class="stat-number like">{{ data.likes }}</span>
+                                <span class="stat-text">👍 {{ 'article.like'|trans }}</span>
+                            </div>
+                            <div class="user-stat">
+                                <span class="stat-number dislike">{{ data.dislikes }}</span>
+                                <span class="stat-text">👎 {{ 'article.dislike'|trans }}</span>
+                            </div>
+                        </div>
+
+                        {% if data.categories|length > 0 %}
+                            <div class="user-categories">
+                                <h5 class="categories-title">{{ 'articles.category'|trans }}</h5>
+                                <div class="category-tags">
+                                    {% for cat, count in data.categories %}
+                                        <span class="category-tag">{{ cat }} ({{ count }})</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="user-meta">
+                            <span class="user-date">
+                                <i class="fas fa-calendar"></i>
+                                {{ data.user.createdAt|date('d M Y') }}
+                            </span>
+                        </div>
+
+                        {% if data.user != app.user %}
+                            <div class="user-actions">
+                                <form method="post" action="{{ path('admin_user_delete', {id: data.user.id, '_locale': app.request.locale}) }}" 
+                                      onsubmit="return confirm('{{ 'msg.confirm_delete'|trans }}');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_user' ~ data.user.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                        {{ 'form.delete'|trans }}
+                                    </button>
+                                </form>
+                            </div>
+                        {% else %}
+                            <div class="user-actions">
+                                <span class="badge bg-info">Your Account</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

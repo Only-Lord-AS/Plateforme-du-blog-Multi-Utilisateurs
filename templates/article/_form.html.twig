@@ -1,0 +1,106 @@
+{{ form_start(form, {'attr': {'class': 'modern-form', 'novalidate': 'novalidate'}}) }}
+
+    <div class="form-group mb-4">
+        <label for="article_title" class="form-label">
+            <i class="fas fa-heading"></i>
+            {{ 'articles.form_title_label'|trans }}
+        </label>
+        {{ form_widget(form.title, {'attr': {'class': 'form-control modern-input', 'placeholder': 'articles.form_title_placeholder'|trans}}) }}
+        {% if form.title.vars.errors|length > 0 %}
+            <div class="form-error">
+                {% for error in form.title.vars.errors %}
+                    <span><i class="fas fa-exclamation-circle"></i> {{ error.message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="article_content" class="form-label">
+            <i class="fas fa-align-left"></i>
+            {{ 'articles.form_content_label'|trans }}
+        </label>
+        {{ form_widget(form.content, {'attr': {'class': 'form-control modern-input modern-textarea', 'rows': '10', 'placeholder': 'articles.form_content_placeholder'|trans}}) }}
+        {% if form.content.vars.errors|length > 0 %}
+            <div class="form-error">
+                {% for error in form.content.vars.errors %}
+                    <span><i class="fas fa-exclamation-circle"></i> {{ error.message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="article_category" class="form-label">
+            <i class="fas fa-folder"></i>
+            {{ 'articles.form_category_label'|trans }}
+        </label>
+        {{ form_widget(form.category, {'attr': {'class': 'form-select modern-select'}}) }}
+        {% if form.category.vars.errors|length > 0 %}
+            <div class="form-error">
+                {% for error in form.category.vars.errors %}
+                    <span><i class="fas fa-exclamation-circle"></i> {{ error.message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group mb-4">
+        <label class="form-label">
+            <i class="fas fa-paperclip"></i>
+            Upload Media
+        </label>
+        <div class="media-type-selector mb-3" style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-primary active" id="btn-photo" onclick="setMediaType('photo')">
+                <i class="fas fa-image"></i> Photo
+            </button>
+            <button type="button" class="btn btn-outline-light" id="btn-file" onclick="setMediaType('file')">
+                <i class="fas fa-file-alt"></i> File
+            </button>
+        </div>
+        <div id="media-input-container">
+            {{ form_widget(form.mediaUpload, {'attr': {'class': 'form-control modern-input', 'accept': 'image/*'}}) }}
+            <small class="text-muted d-block mt-2" id="media-help-text" style="color: rgba(255,255,255,0.6) !important;">Authorized formats: JPG, PNG, GIF, WebP</small>
+        </div>
+        {% if form.mediaUpload.vars.errors|length > 0 %}
+            <div class="form-error">
+                {% for error in form.mediaUpload.vars.errors %}
+                    <span><i class="fas fa-exclamation-circle"></i> {{ error.message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+    function setMediaType(type) {
+        const input = document.getElementById('article_mediaUpload');
+        const helpText = document.getElementById('media-help-text');
+        const btnPhoto = document.getElementById('btn-photo');
+        const btnFile = document.getElementById('btn-file');
+
+        if (type === 'photo') {
+            input.accept = 'image/*';
+            helpText.innerText = 'Authorized formats: JPG, PNG, GIF, WebP';
+            btnPhoto.className = 'btn btn-primary active';
+            btnFile.className = 'btn btn-outline-light';
+        } else {
+            input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt';
+            helpText.innerText = 'Authorized formats: PDF, DOC, XLS, PPT, TXT';
+            btnPhoto.className = 'btn btn-outline-light';
+            btnFile.className = 'btn btn-primary active';
+        }
+    }
+    </script>
+
+    {{ form_errors(form) }}
+
+    <button type="submit" class="btn btn-primary btn-submit-form">
+        <i class="fas fa-save"></i>
+        {% if form.vars.data.id %}
+            {{ 'articles.form_update_btn'|trans }}
+        {% else %}
+            {{ 'articles.form_create_btn'|trans }}
+        {% endif %}
+    </button>
+
+{{ form_end(form) }}

@@ -1,0 +1,170 @@
+# Traductions Françaises
+app.title: "Speak"
+app.tagline: "L'Art de l'Expression"
+
+# Navigation
+nav.home: "Accueil"
+nav.articles: "Articles"
+nav.register: "S'inscrire"
+nav.login: "Se connecter"
+nav.dashboard: "Tableau de bord"
+nav.profile: "Profil"
+nav.logout: "Déconnexion"
+nav.language: "Langue"
+
+# Hero Section
+hero.title: "Speak"
+hero.subtitle: "L'Art de l'Expression"
+hero.cta_primary: "Commencer"
+hero.cta_secondary: "Se connecter"
+
+# Categories Section
+categories.title: "Catégories Populaires"
+categories.tech: "Technologie"
+categories.tech_desc: "Articles sur les dernières innovations technologiques"
+categories.travel: "Voyage"
+categories.travel_desc: "Explorez le monde à travers nos récits de voyage"
+categories.food: "Gastronomie"
+categories.food_desc: "Découvrez les meilleures recettes et restaurants"
+categories.lifestyle: "Mode de Vie"
+categories.lifestyle_desc: "Conseils et tendances pour une meilleure vie"
+categories.general: "Général"
+categories.general_desc: "Articles diversifiés sur divers sujets"
+categories.all: "Tous"
+
+# Articles Section
+articles.title: "Derniers Articles"
+articles.empty_title: "Aucun article disponible pour le moment"
+articles.empty_message: "Soyez le premier à partager votre histoire"
+articles.create_btn: "Créer un Article"
+articles.read_more: "Lire plus →"
+articles.by_author: "Par %author%"
+articles.published: "Publié %date%"
+articles.likes: "J'aime"
+articles.comments: "Commentaires"
+articles.category: "Catégorie"
+
+# Article Form
+articles.form_title: "Créer un Article"
+articles.form_edit_title: "Modifier l'Article"
+articles.form_title_label: "Titre"
+articles.form_title_placeholder: "Entrez le titre de l'article"
+articles.form_content_label: "Contenu"
+articles.form_content_placeholder: "Écrivez le contenu de votre article ici..."
+articles.form_category_label: "Catégorie"
+articles.form_create_btn: "Créer l'Article"
+articles.form_update_btn: "Mettre à Jour"
+articles.form_back_link: "Retour aux Articles"
+articles.form_cancel_btn: "Annuler"
+
+# Newsletter
+newsletter.title: "Restez Informé"
+newsletter.description: "Abonnez-vous à notre newsletter pour recevoir les derniers articles directement dans votre boîte mail"
+newsletter.placeholder: "Votre adresse email"
+newsletter.submit: "S'abonner"
+newsletter.success: "Merci de votre abonnement!"
+
+# Comments Section
+comment.pending: "En attente de modération"
+comment.approved: "Approuvé"
+comment.rejected: "Rejeté"
+comment.approve: "Approuver"
+comment.reject: "Rejeter"
+comment.delete: "Supprimer"
+
+# Admin
+admin.dashboard: "Tableau de Bord Admin"
+admin.comments: "Gestion des Commentaires"
+admin.users: "Gestion des Utilisateurs"
+admin.articles: "Gestion des Articles"
+admin.statistics: "Statistiques"
+admin.total_articles: "Articles Total"
+admin.total_comments: "Commentaires Total"
+admin.total_users: "Utilisateurs Total"
+admin.approved_comments: "Commentaires Approuvés"
+admin.pending_comments: "Commentaires en Attente"
+admin.rejected_comments: "Commentaires Rejetés"
+
+# Forms
+form.title: "Titre"
+form.content: "Contenu"
+form.category: "Catégorie"
+form.email: "Email"
+form.password: "Mot de Passe"
+form.confirm_password: "Confirmer le Mot de Passe"
+form.submit: "Soumettre"
+form.create: "Créer"
+form.edit: "Modifier"
+form.save: "Enregistrer"
+form.delete: "Supprimer"
+form.cancel: "Annuler"
+
+# Messages
+msg.success: "Opération complétée avec succès"
+msg.error: "Une erreur s'est produite. Veuillez réessayer."
+msg.confirm_delete: "Êtes-vous sûr de vouloir supprimer cet élément?"
+msg.loading: "Chargement..."
+
+# Login & Register
+auth.sign_in: "Se connecter"
+auth.email: "Email"
+auth.password: "Mot de Passe"
+auth.remember_me: "Se souvenir de moi"
+auth.sign_in_button: "Se connecter"
+auth.logged_in_as: "Vous êtes connecté en tant que"
+auth.logout_link: "Déconnexion"
+auth.register_title: "Créer votre compte"
+auth.confirm_password: "Confirmer le Mot de Passe"
+auth.register_button: "S'inscrire"
+auth.already_have_account: "Vous avez déjà un compte?"
+auth.need_account: "Vous avez besoin d'un compte?"
+
+# Footer
+footer.about: "À Propos"
+footer.contact: "Contact"
+footer.terms: "Conditions d'Utilisation"
+footer.privacy: "Politique de Confidentialité"
+footer.copyright: "Tous droits réservés à A.S (Ouhaddine MED Amine).<br>© L’École Marocaine des Sciences de l’Ingénieur EMSI ANFA CASABLANCA 2025 - 2026."
+footer.follow: "Nous Suivre"
+
+# Article Detail Page
+article.detail: "Détails de l'Article"
+article.like: "J'aime"
+article.dislike: "Je n'aime pas"
+article.add_comment: "Ajouter un Commentaire"
+article.your_comment: "Votre commentaire"
+article.submit_comment: "Envoyer le Commentaire"
+article.no_comments: "Aucun commentaire pour le moment. Soyez le premier à commenter!"
+article.login_to_comment: "Veuillez vous connecter pour laisser un commentaire."
+article.login_to_like: "Veuillez vous connecter pour aimer cet article."
+article.comment_pending: "Votre commentaire a été soumis et est en attente de modération."
+article.comment_success: "Votre commentaire a été soumis avec succès!"
+
+# Password Strength
+password.strength: "Force du Mot de Passe"
+password.weak: "Faible"
+password.medium: "Moyen"
+password.strong: "Fort"
+password.very_strong: "Très Fort"
+password.hint: "Utilisez au moins 8 caractères avec des lettres et des chiffres pour un mot de passe plus fort."
+password.weak_warning: "Attention: Votre mot de passe est faible. Nous recommandons un mot de passe plus fort."
+
+# User Interests
+interests.title: "Sélectionnez Vos Intérêts"
+interests.subtitle: "Aidez-nous à personnaliser votre expérience"
+interests.technology: "Technologie"
+interests.travel: "Voyage"
+interests.food: "Gastronomie"
+interests.lifestyle: "Mode de Vie"
+interests.business: "Business"
+interests.sports: "Sports"
+interests.save: "Enregistrer les Préférences"
+interests.skip: "Passer pour l'instant"
+
+# Flash Messages
+flash.comment_submitted: "Votre commentaire a été soumis et est en attente d'approbation."
+flash.like_added: "Merci pour votre retour!"
+flash.login_required: "Veuillez vous connecter pour effectuer cette action."
+flash.article_created: "Article créé avec succès!"
+flash.article_updated: "Article mis à jour avec succès!"
+flash.article_deleted: "Article supprimé avec succès!"
