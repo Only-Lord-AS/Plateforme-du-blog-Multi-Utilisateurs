@@ -1,0 +1,26 @@
+{
+    "name": "plateforme-du-blog-multi-utilisateurs",
+    "version": "1.0.0",
+    "description": "Multi-User Blog Platform built with Symfony and Vanilla JS",
+    "main": "public/app.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "dev": "symfony server:start",
+        "watch": "php bin/console asset-map:compile --watch",
+        "build": "php bin/console asset-map:compile"
+    },
+    "keywords": [
+        "symfony",
+        "blog",
+        "javascript",
+        "multi-user"
+    ],
+    "author": "Only-Lord-AS",
+    "license": "MIT",
+    "devDependencies": {
+        "@hotwired/stimulus": "^3.2.2",
+        "@hotwired/turbo": "^8.0.0"
+    }
+}
