@@ -6,10 +6,10 @@
 <section class="article-detail-section">
     <div class="container">
         <!-- Article Header -->
-        <div class="article-detail-card">
+        <article class="article-detail-card" aria-labelledby="article-title">
             <div class="article-detail-header">
                 <span class="category-badge-detail">{{ article.category.name }}</span>
-                <h1 class="article-detail-title">{{ article.title }}</h1>
+                <h1 id="article-title" class="article-detail-title">{{ article.title }}</h1>
                 <div class="article-detail-meta">
                     <span class="meta-item">
                         {% if article.author.avatar %}
@@ -23,7 +23,9 @@
                     </span>
                     <span class="meta-item">
                         <i class="fas fa-calendar"></i>
-                        {{ article.createdAt|date('d M Y, H:i') }}
+                        <time datetime="{{ article.createdAt|date('Y-m-d H:i') }}">
+                            {{ article.createdAt|date('d M Y, H:i') }}
+                        </time>
                     </span>
                 </div>
             </div>
@@ -86,7 +88,7 @@
                     </div>
                 {% endif %}
             </div>
-        </div>
+        </article>
 
         <!-- Comments Section -->
         <div class="comments-section-card">
@@ -117,7 +119,9 @@
                             <div class="comment-body">
                                 <div class="comment-header">
                                     <strong class="comment-author">{{ comment.author.email }}</strong>
-                                    <small class="comment-date">{{ comment.createdAt|date('d M Y, H:i') }}</small>
+                                    <time class="comment-date" datetime="{{ comment.createdAt|date('Y-m-d H:i') }}">
+                                        {{ comment.createdAt|date('d M Y, H:i') }}
+                                    </time>
                                 </div>
                                 <p class="comment-text">{{ comment.content }}</p>
                                 {% if is_granted('ROLE_ADMIN') %}
