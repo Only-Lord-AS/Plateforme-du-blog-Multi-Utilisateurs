@@ -33,12 +33,23 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/admin/dashboard/data', name: 'admin_dashboard_data', requirements: ['_locale' => 'en|fr|ar'])]
-    public function data(ArticleRepository $articleRepo): JsonResponse
+    public function data(ArticleRepository $articleRepo, UserRepository $userRepo, Request $request): JsonResponse
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $labels = [];
         $articles = [];
+        $locale = $request->getLocale();
+
+        // Use IntlDateFormatter for localized month names
+        $formatter = new \IntlDateFormatter(
+            $locale,
+            \IntlDateFormatter::MEDIUM,
+            \IntlDateFormatter::NONE,
+            null,
+            null,
+            'MMM yyyy'
+        );
 
         $now = new \DateTimeImmutable();
 
@@ -47,7 +58,7 @@ class DashboardController extends AbstractController
             $start = $now->modify("first day of -{$i} month")->setTime(0, 0, 0);
             $end = $now->modify("last day of -{$i} month")->setTime(23, 59, 59);
 
-            $labels[] = $start->format('M Y');
+            $labels[] = $formatter->format($start);
 
             $count = (int) $articleRepo->createQueryBuilder('a')
                 ->select('COUNT(a.id)')
@@ -67,7 +78,7 @@ class DashboardController extends AbstractController
             $end = $now->modify("last day of -{$i} month")->setTime(23, 59, 59);
 
             // Cumulative count up to end of that month
-            $count = (int) $this->container->get('doctrine')->getRepository(\App\Entity\User::class)->createQueryBuilder('u')
+            $count = (int) $userRepo->createQueryBuilder('u')
                 ->select('COUNT(u.id)')
                 ->andWhere('u.createdAt <= :end')
                 ->setParameter('end', $end)
@@ -78,7 +89,7 @@ class DashboardController extends AbstractController
         }
 
         return new JsonResponse([
-            'labels' => $labels,
+            'labels' => $labels, // Fixed: was missing/mismatched in previous versions
             'articles' => $articles,
             'users' => $users,
         ]);

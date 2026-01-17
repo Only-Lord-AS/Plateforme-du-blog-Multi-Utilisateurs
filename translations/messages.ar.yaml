@@ -168,3 +168,14 @@ flash.login_required: "يرجى تسجيل الدخول لتنفيذ هذا ال
 flash.article_created: "تم إنشاء المقالة بنجاح!"
 flash.article_updated: "تم تحديث المقالة بنجاح!"
 flash.article_deleted: "تم حذف المقالة بنجاح!"
+
+# الرسوم البيانية
+chart.comments_status: "حالة التعليقات"
+chart.platform_growth: "نمو المنصة"
+chart.global_stats: "الإحصائيات العامة"
+chart.no_data: "لا توجد بيانات"
+chart.approved: "مقبولة"
+chart.pending: "معلقة"
+chart.rejected: "مرفوضة"
+chart.users: "مستخدمين"
+chart.articles: "مقالات"

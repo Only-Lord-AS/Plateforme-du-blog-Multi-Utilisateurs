@@ -18,7 +18,7 @@
 
         <!-- Stats Cards -->
         <div class="stats-grid">
-            <a href="{{ path('admin_users', {'_locale': app.request.locale}) }}" class="stat-card stat-card-primary stat-card-link">
+            <a href="{{ path('admin_users', {'_locale': app.request.locale}) }}" class="stat-card stat-card-primary stat-card-link" data-aos="fade-up" data-aos-delay="100">
                 <div class="stat-icon">
                     <i class="fas fa-users"></i>
                 </div>
@@ -29,7 +29,7 @@
                 <div class="stat-arrow"><i class="fas fa-chevron-right"></i></div>
             </a>
             
-            <a href="{{ path('app_article_index', {'_locale': app.request.locale}) }}" class="stat-card stat-card-purple stat-card-link">
+            <a href="{{ path('app_article_index', {'_locale': app.request.locale}) }}" class="stat-card stat-card-purple stat-card-link" data-aos="fade-up" data-aos-delay="200">
                 <div class="stat-icon">
                     <i class="fas fa-newspaper"></i>
                 </div>
@@ -40,8 +40,8 @@
                 <div class="stat-arrow"><i class="fas fa-chevron-right"></i></div>
             </a>
 
-            <!-- Replaced Granular Comment Stats with Total Comments -->
-            <div class="stat-card stat-card-success">
+            <!-- Total Comments -->
+            <div class="stat-card stat-card-success" data-aos="fade-up" data-aos-delay="300">
                 <div class="stat-icon">
                     <i class="fas fa-comments"></i>
                 </div>
@@ -55,11 +55,11 @@
         <!-- Charts Row -->
         <div class="row g-4 mt-4">
             <!-- Pie Chart -->
-            <div class="col-md-6">
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
                 <div class="chart-card">
                     <h5 class="chart-title">
                         <i class="fas fa-chart-pie"></i>
-                        Comments Status
+                        {{ 'chart.comments_status'|trans }}
                     </h5>
                     <div class="chart-container">
                         <canvas id="commentsPie"></canvas>
@@ -68,11 +68,11 @@
             </div>
 
             <!-- Line Chart -->
-            <div class="col-md-6">
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
                 <div class="chart-card">
                     <h5 class="chart-title">
                         <i class="fas fa-chart-line"></i>
-                        Platform Growth
+                        {{ 'chart.platform_growth'|trans }}
                     </h5>
                     <div class="chart-container">
                         <canvas id="growthLine"></canvas>
@@ -81,11 +81,11 @@
             </div>
 
             <!-- Bar Chart -->
-            <div class="col-md-12">
+            <div class="col-md-12" data-aos="fade-up" data-aos-delay="600">
                 <div class="chart-card">
                     <h5 class="chart-title">
                         <i class="fas fa-chart-bar"></i>
-                        Global Stats
+                        {{ 'chart.global_stats'|trans }}
                     </h5>
                     <div class="chart-container chart-container-lg">
                         <canvas id="statsBar"></canvas>
@@ -96,98 +96,159 @@
     </div>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ asset('assets/vendor/chart.js') }}"></script>
 
 <script>
-Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
-Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+document.addEventListener('DOMContentLoaded', function() {
+    // Global Chart Settings
+    Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+    Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
 
-                scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { stepSize: 1 }
-                    },
-                    x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+    // Translations
+    const trans = {
+        approved: "{{ 'chart.approved'|trans }}",
+        pending: "{{ 'chart.pending'|trans }}",
+        rejected: "{{ 'chart.rejected'|trans }}",
+        noData: "{{ 'chart.no_data'|trans }}",
+        totalCount: "{{ 'admin.statistics'|trans }}", 
+        users: "{{ 'chart.users'|trans }}",
+        articles: "{{ 'chart.articles'|trans }}"
+    };
+
+    /* 1. Comments Status (Pie Chart) */
+    const approvedCount = {{ approvedComments }};
+    const pendingCount = {{ pendingComments }};
+    const rejectedCount = {{ rejectedComments|default(0) }};
+    const totalComments = approvedCount + pendingCount + rejectedCount;
+
+    let pieData = [approvedCount, pendingCount, rejectedCount];
+    let pieColors = ['#22c55e', '#f59e0b', '#ef4444'];
+    let pieLabels = [trans.approved, trans.pending, trans.rejected];
+
+    // Handle Empty State
+    if (totalComments === 0) {
+        pieData = [1];
+        pieColors = ['rgba(255, 255, 255, 0.1)'];
+        pieLabels = [trans.noData];
+    }
+
+    new Chart(document.getElementById('commentsPie'), {
+        type: 'doughnut',
+        data: {
+            labels: pieLabels,
+            datasets: [{
+                data: pieData,
+                backgroundColor: pieColors,
+                borderWidth: 0,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 20, font: { size: 12 } }
+                },
+                tooltip: {
+                    enabled: totalComments > 0
                 }
-            }
-        });
+            },
+            cutout: '65%'
+        }
     });
 
-/* Pie Chart - Now includes Rejected */
-const approved = {{ approvedComments }};
-const pending = {{ pendingComments }};
-const rejected = {{ rejectedComments|default(0) }};
-const totalComments = approved + pending + rejected;
+    /* 2. Platform Growth (Line Chart) */
+    fetch("{{ path('admin_dashboard_data') }}")
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('growthLine').getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(0, 242, 255, 0.5)');
+            gradient.addColorStop(1, 'rgba(0, 242, 255, 0)');
 
-let pieData = [approved, pending, rejected];
-let pieColors = ['#22c55e', '#f59e0b', '#ef4444'];
-let pieLabels = ['Approved', 'Pending', 'Rejected'];
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: trans.users,
+                        data: data.users,
+                        borderColor: '#00f2ff',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { stepSize: 1 }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading chart data:', error));
 
-if (totalComments === 0) {
-    pieData = [1];
-    pieColors = ['rgba(255, 255, 255, 0.1)'];
-    pieLabels = ['No Data'];
-}
-
-new Chart(document.getElementById('commentsPie'), {
-    type: 'doughnut',
-    data: {
-        labels: pieLabels,
-        datasets: [{
-            data: pieData,
-            backgroundColor: pieColors,
-            borderWidth: 0,
-            hoverOffset: 10
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: { padding: 20, font: { size: 14 } }
-            },
-            tooltip: {
-                enabled: totalComments > 0 // Disable tooltip if empty
-            }
+    /* 3. Global Stats (Bar Chart) */
+    new Chart(document.getElementById('statsBar'), {
+        type: 'bar',
+        data: {
+            labels: [trans.users, trans.articles, trans.approved, trans.pending, trans.rejected],
+            datasets: [{
+                label: trans.totalCount,
+                data: [{{ usersCount }}, {{ articlesCount }}, approvedCount, pendingCount, rejectedCount],
+                backgroundColor: [
+                    'rgba(102, 126, 234, 0.8)',
+                    'rgba(0, 242, 255, 0.8)',
+                    'rgba(34, 197, 94, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
+                    'rgba(239, 68, 68, 0.8)'
+                ],
+                borderColor: [
+                    '#667eea',
+                    '#00f2ff',
+                    '#22c55e',
+                    '#f59e0b',
+                    '#ef4444'
+                ],
+                borderWidth: 2,
+                borderRadius: 6
+            }]
         },
-        cutout: '60%'
-    }
-});
-
-/* Bar Chart */
-new Chart(document.getElementById('statsBar'), {
-    type: 'bar',
-    data: {
-        labels: ['Users', 'Articles', 'Approved', 'Pending', 'Rejected'],
-        datasets: [{
-            label: 'Total Count',
-            data: [{{ usersCount }}, {{ articlesCount }}, {{ approvedComments }}, {{ pendingComments }}, {{ rejectedComments|default(0) }}],
-            backgroundColor: [
-                'rgba(102, 126, 234, 0.8)',
-                'rgba(0, 242, 255, 0.8)',
-                'rgba(34, 197, 94, 0.8)',
-                'rgba(245, 158, 11, 0.8)',
-                'rgba(239, 68, 68, 0.8)'
-            ],
-            borderColor: [
-                '#667eea',
-                '#00f2ff',
-                '#22c55e',
-                '#f59e0b',
-                '#ef4444'
-            ],
-            borderWidth: 2,
-            borderRadius: 8
-        }]
-    },
-    options: {
-        plugins: { legend: { display: false } },
-        scales: {
-            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
-            x: { grid: { display: false } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { stepSize: 1 }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
         }
-    }
+    });
 });
 </script>
 {% endblock %}

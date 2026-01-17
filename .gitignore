@@ -16,5 +16,9 @@
 
 ###> symfony/asset-mapper ###
 /public/assets/
+!/public/assets/vendor/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# NPM
+/node_modules/
