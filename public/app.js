@@ -100,4 +100,109 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Start
     setTimeout(runAnimations, 500);
+
+    /* ========== INTERACTIVE JS FEATURES ========== */
+
+    // 1. Reading Progress Bar
+    const progressBar = document.getElementById('reading-progress-bar');
+
+    function updateProgressBar() {
+        if (!progressBar) return;
+
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+        const scrolled = (scrollTop / (scrollHeight - clientHeight)) * 100;
+        progressBar.style.width = scrolled + '%';
+    }
+
+    // 2. Scroll To Top Button
+    const scrollTopBtn = document.getElementById('scroll-top-btn');
+
+    function toggleScrollTopBtn() {
+        if (!scrollTopBtn) return;
+
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    if (scrollTopBtn) {
+        scrollTopBtn.addEventListener('click', scrollToTop);
+    }
+
+    // Global Scroll Listener
+    window.addEventListener('scroll', () => {
+        requestAnimationFrame(() => {
+            updateProgressBar();
+            toggleScrollTopBtn();
+        });
+    });
+
+    // 3. AJAX Likes/Dislikes
+    const engagementBtns = document.querySelectorAll('.js-engagement-btn');
+
+    engagementBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const url = btn.href;
+            const type = btn.dataset.type;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Update all buttons in the section
+                    const parent = btn.closest('.engagement-buttons');
+                    const likeBtn = parent.querySelector('.btn-like');
+                    const dislikeBtn = parent.querySelector('.btn-dislike');
+
+                    likeBtn.querySelector('.engagement-count').textContent = data.totalLikes;
+                    dislikeBtn.querySelector('.engagement-count').textContent = data.totalDislikes;
+
+                    // Toggle active classes
+                    if (type === 'like') {
+                        likeBtn.classList.toggle('active');
+                        dislikeBtn.classList.remove('active');
+                    } else {
+                        dislikeBtn.classList.toggle('active');
+                        likeBtn.classList.remove('active');
+                    }
+                }
+            } catch (error) {
+                console.error('Like failed:', error);
+            }
+        });
+    });
+
+    // 4. Share / Copy Link
+    const shareBtn = document.querySelector('.js-share-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const originalLabel = shareBtn.querySelector('.engagement-label').textContent;
+                shareBtn.querySelector('.engagement-label').textContent = 'Copied!';
+                shareBtn.style.color = '#22c55e';
+
+                setTimeout(() => {
+                    shareBtn.querySelector('.engagement-label').textContent = originalLabel;
+                    shareBtn.style.color = '';
+                }, 2000);
+            });
+        });
+    }
 });

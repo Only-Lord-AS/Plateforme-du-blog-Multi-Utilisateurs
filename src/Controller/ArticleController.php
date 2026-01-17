@@ -10,6 +10,7 @@ use App\Repository\ArticleRepository;
 use App\Service\SensitiveWordFilter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -159,6 +160,15 @@ final class ArticleController extends AbstractController
         }
 
         $em->flush();
+
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse([
+                'count' => $repo->count(['article' => $article, 'isLike' => $type === 'like']),
+                'totalLikes' => $repo->count(['article' => $article, 'isLike' => true]),
+                'totalDislikes' => $repo->count(['article' => $article, 'isLike' => false]),
+                'isActive' => $type === 'like' // Simple feedback for JS
+            ]);
+        }
 
         return $this->redirectToRoute('app_article_show', [
             'id' => $article->getId(),
