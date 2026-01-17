@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.email|split('@')[0]|capitalize }} - {{ 'nav.profile'|trans }}{% endblock %}
+
+{% block body %}
+<!-- Profile Header (Cover + Info) -->
+<div class="profile-header-premium" style="position: relative; margin-bottom: 3rem;">
+    <!-- Cover Photo (Dynamic) -->
+    <div class="profile-cover" style="height: 280px; background: {% if user.banner %}url('{{ asset('uploads/banners/' ~ user.banner) }}') center/cover no-repeat{% else %}linear-gradient(135deg, #667eea 0%, #764ba2 100%){% endif %}; border-radius: 0 0 30px 30px; position: relative; overflow: hidden;">
+        {% if not user.banner %}
+            <div class="floating-shape shape-1" style="width: 300px; height: 300px; opacity: 0.2; top: -50px; left: -50px;"></div>
+            <div class="floating-shape shape-2" style="width: 200px; height: 200px; opacity: 0.2; bottom: 20px; right: 50px;"></div>
+        {% endif %}
+        
+        <!-- Banner Upload Button (Only for owner) -->
+        {% if app.user and app.user.id == user.id %}
+            <a href="{{ path('app_profile_edit', {'_locale': app.request.locale}) }}" class="position-absolute end-0 bottom-0 m-3 btn btn-sm btn-light rounded-pill shadow-sm opacity-75 hover-opacity-100" style="z-index: 10;">
+                <i class="fas fa-camera"></i> {{ 'profile.edit_banner'|trans({}, 'messages')|default('Change Cover') }}
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- User Info Container -->
+    <div class="container" style="position: relative; margin-top: -100px; text-align: center;">
+        
+        <!-- Avatar Wrapper -->
+        <div class="profile-avatar-container position-relative d-inline-block">
+            <!-- Avatar Image -->
+            <div class="profile-avatar" style="width: 170px; height: 170px; border-radius: 50%; border: 5px solid rgba(255, 255, 255, 0.1); background: #1a1a2e; overflow: hidden; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                {% if user.avatar %}
+                    <img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                    <span style="font-size: 5rem;">👤</span>
+                {% endif %}
+            </div>
+
+            <!-- Edit Button (Only for owner) -->
+            {% if app.user and app.user.id == user.id %}
+                <a href="{{ path('app_profile_edit', {'_locale': app.request.locale}) }}" class="position-absolute bottom-0 end-0 bg-accent text-white rounded-circle d-flex align-items-center justify-content-center border border-white shadow-sm" style="width: 45px; height: 45px; text-decoration: none; transform: translate(5px, 5px); background: var(--accent-color);" title="Change Avatar">
+                    <i class="fas fa-camera"></i>
+                </a>
+            {% endif %}
+
+            {% if 'ROLE_ADMIN' in user.roles %}
+                <span class="badge bg-danger rounded-pill" style="position: absolute; bottom: 10px; left: -10px; font-size: 0.8rem; padding: 0.4rem 0.8rem; box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4); pointer-events: none;">
+                    <i class="fas fa-shield-alt"></i> Admin
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- Name, Email, Bio -->
+        <h1 class="mt-3 mb-1 text-white" style="font-family: var(--font-title-family); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px;">
+            {{ user.nickname|default(user.email|split('@')[0])|capitalize }}
+            {% if app.user and app.user.id == user.id %}
+                 <a href="{{ path('app_profile_edit', {'_locale': app.request.locale}) }}" class="text-white-50 small" title="Edit Name"><i class="fas fa-pen small" style="font-size: 1rem;"></i></a>
+            {% endif %}
+        </h1>
+        <p class="text-info mb-2" style="font-size: 0.95rem;">{{ user.email }}</p>
+        
+        <p class="text-white-50 mb-2" style="font-size: 0.9rem;">
+            Member since {{ user.createdAt|date('F Y') }}
+        </p>
+
+        {% if user.bio %}
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-6">
+                    <p class="text-white-50 fst-italic">"{{ user.bio }}"</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Follow/Unfollow Button -->
+        {% if app.user and app.user != user %}
+            <div class="text-center mb-4">
+                {% if app.user.isFollowing(user) %}
+                    <form action="{{ path('app_profile_unfollow', {'id': user.id}) }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-outline-light px-4 rounded-pill">
+                            {{ 'profile.unfollow'|trans({}, 'messages')|default('Unfollow') }}
+                        </button>
+                    </form>
+                {% else %}
+                    <form action="{{ path('app_profile_follow', {'id': user.id}) }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill btn-glow">
+                            {{ 'profile.follow'|trans({}, 'messages')|default('Follow') }}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Stats Bar -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-10 col-md-8 col-lg-6">
+                <div class="stats-box-premium" style="background: var(--bg-glass); border: 1px solid var(--border-glass); border-radius: 20px; padding: 1.5rem; display: flex; justify-content: space-around; backdrop-filter: blur(10px);">
+                    <div class="stat-item text-center">
+                        <div class="h3 mb-0 fw-bold text-white">{{ articles|length }}</div>
+                        <div class="small text-white-75 text-uppercase">{{ 'nav.articles'|trans }}</div>
+                    </div>
+                    <div style="width: 1px; background: var(--border-glass);"></div>
+                    <div class="stat-item text-center">
+                        <div class="h3 mb-0 fw-bold text-white">{{ user.followers|length }}</div>
+                        <div class="small text-white-75 text-uppercase">Inspired</div>
+                    </div>
+                    <div style="width: 1px; background: var(--border-glass);"></div>
+                    <div class="stat-item text-center">
+                        <div class="h3 mb-0 fw-bold text-white">{{ user.follows|length }}</div>
+                        <div class="small text-white-75 text-uppercase">Inspiring</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User's Articles Feed -->
+<div class="container mb-5">
+    <h3 class="section-title-premium text-start mb-4" style="font-size: 1.8rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">
+        <i class="fas fa-pen-nib me-2 text-info"></i> {{ 'nav.articles'|trans }}
+    </h3>
+
+    {% if articles is empty %}
+        <div class="text-center py-5 text-muted">
+            <i class="fas fa-newspaper fa-3x mb-3 opacity-50"></i>
+            <p>No articles published yet.</p>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="blog-feed-premium d-flex flex-column gap-4">
+                    {% for article in articles %}
+                         <!-- Reusing the exact card style from Home -->
+                         <div class="blog-card-premium feed-card" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 15px; background: var(--bg-glass); border: 1px solid var(--border-glass);">
+                            
+                            <!-- Header -->
+                            <div class="card-header-premium" style="padding: 1rem; display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.02);">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; font-size: 1rem;">{{ article.author.email|split('@')[0]|capitalize }}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">{{ article.createdAt|date('d M Y, H:i') }}</div>
+                                </div>
+                                <span class="category-tag-premium" style="font-size: 0.8rem;">{{ article.category.name }}</span>
+                            </div>
+
+                            <!-- Image -->
+                            {% if article.mediaType == 'image' and article.mediaFilename %}
+                                <div class="blog-image-premium" style="width: 100%; height: auto; min-height: 250px; max-height: 400px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000;">
+                                    <img src="{{ asset('uploads/media/' ~ article.mediaFilename) }}" alt="{{ article.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                            {% endif %}
+
+                            <!-- Content -->
+                            <div class="blog-content-premium" style="padding: 1.5rem;">
+                                <h3 class="blog-title-premium text-white" style="font-size: 1.5rem; margin-bottom: 0.5rem;">{{ article.title }}</h3>
+                                <p class="blog-excerpt-premium text-muted">{{ article.content|slice(0, 200) }}...</p>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="blog-footer-premium" style="padding: 0.8rem 1.5rem; border-top: 1px solid var(--border-glass); background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: space-between;">
+                                <div class="engagement-metrics-premium d-flex gap-3">
+                                    <span class="text-white"><i class="fas fa-thumbs-up text-info"></i> {{ article.likes|filter(l => l.isLike)|length }}</span>
+                                    <span class="text-white"><i class="fas fa-comment"></i> {{ article.comments|filter(c => c.isApproved)|length }}</span>
+                                </div>
+                                <a href="{{ path('app_article_show', {id: article.id}) }}" class="btn btn-sm btn-outline-light rounded-pill">Read More</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

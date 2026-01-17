@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} - {{ 'app.title'|trans }}{% endblock %}
+
+{% block body %}
+<section class="article-detail-section">
+    <div class="container">
+        <!-- Article Header -->
+        <div class="article-detail-card">
+            <div class="article-detail-header">
+                <span class="category-badge-detail">{{ article.category.name }}</span>
+                <h1 class="article-detail-title">{{ article.title }}</h1>
+                <div class="article-detail-meta">
+                    <span class="meta-item">
+                        {% if article.author.avatar %}
+                            <img src="{{ asset('uploads/avatars/' ~ article.author.avatar) }}" alt="Avatar" class="rounded-circle me-1" style="width: 24px; height: 24px; object-fit: cover;">
+                        {% else %}
+                            <i class="fas fa-user"></i>
+                        {% endif %}
+                        <a href="{{ path('app_profile_show', {id: article.author.id, _locale: app.request.locale}) }}" style="color: inherit; text-decoration: none;">
+                            {{ article.author.nickname|default(article.author.email|split('@')[0])|capitalize }}
+                        </a>
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        {{ article.createdAt|date('d M Y, H:i') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Article Media -->
+            {% if article.mediaFilename %}
+                <div class="article-media mb-4 text-center">
+                    {% if article.mediaType == 'image' %}
+                        <img src="{{ asset('uploads/media/' ~ article.mediaFilename) }}" alt="{{ article.title }}" class="img-fluid rounded shadow-sm" style="max-height: 500px; width: auto;">
+                    {% else %}
+                        <div class="file-attachment p-4 border rounded" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1) !important;">
+                            <i class="fas fa-file-alt fa-3x mb-3 text-primary"></i>
+                            <h5 class="mb-3">Attachment</h5>
+                            <a href="{{ asset('uploads/media/' ~ article.mediaFilename) }}" class="btn btn-outline-primary" download>
+                                <i class="fas fa-download"></i> Download File
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Article Content -->
+            <div class="article-detail-content">
+                {{ article.content|nl2br }}
+            </div>
+
+            <!-- Like/Dislike Section -->
+            <div class="article-engagement-section">
+                <h4 class="engagement-title">{{ 'articles.likes'|trans }}</h4>
+                
+                {% if app.user %}
+                    <div class="engagement-buttons">
+                        <a href="{{ path('article_like', {id: article.id, type: 'like', _locale: app.request.locale}) }}"
+                           class="btn-engagement btn-like {% if app.user and article.likes|filter(l => l.isLike and l.user == app.user)|length > 0 %}active{% endif %}">
+                            <span class="engagement-icon">👍</span>
+                            <span class="engagement-label">{{ 'article.like'|trans }}</span>
+                            <span class="engagement-count">{{ article.likes|filter(l => l.isLike)|length }}</span>
+                        </a>
+                        
+                        <a href="{{ path('article_like', {id: article.id, type: 'dislike', _locale: app.request.locale}) }}"
+                           class="btn-engagement btn-dislike {% if app.user and article.likes|filter(l => not l.isLike and l.user == app.user)|length > 0 %}active{% endif %}">
+                            <span class="engagement-icon">👎</span>
+                            <span class="engagement-label">{{ 'article.dislike'|trans }}</span>
+                            <span class="engagement-count">{{ article.likes|filter(l => not l.isLike)|length }}</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="engagement-login-prompt">
+                        <p>{{ 'article.login_to_like'|trans }}</p>
+                        <a href="{{ path('app_login', {'_locale': app.request.locale}) }}" class="btn btn-primary btn-sm">
+                            {{ 'nav.login'|trans }}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section-card">
+            <h3 class="comments-section-title">
+                <i class="fas fa-comments"></i>
+                {{ 'articles.comments'|trans }}
+                <span class="comments-count">({{ article.comments|filter(c => c.isApproved)|length }})</span>
+            </h3>
+
+            <!-- Flash Messages -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+
+            <!-- Existing Comments -->
+            <div class="comments-list">
+                {% set hasApprovedComments = false %}
+                {% for comment in article.comments %}
+                    {% if comment.isApproved %}
+                        {% set hasApprovedComments = true %}
+                        <div class="comment-item">
+                            <div class="comment-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <strong class="comment-author">{{ comment.author.email }}</strong>
+                                    <small class="comment-date">{{ comment.createdAt|date('d M Y, H:i') }}</small>
+                                </div>
+                                <p class="comment-text">{{ comment.content }}</p>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <div class="comment-actions mt-2 text-end">
+                                        <form method="post" action="{{ path('app_comment_delete', {'id': comment.id, '_locale': app.request.locale}) }}" onsubmit="return confirm('{{ 'msg.confirm_delete'|trans }}');" style="display: inline-block;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                            <button class="btn btn-danger btn-sm p-1 px-2" style="font-size: 0.8rem;">
+                                                <i class="fas fa-trash"></i> {{ 'comment.delete'|trans }}
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if not hasApprovedComments %}
+                    <div class="no-comments">
+                        <div class="no-comments-icon">💬</div>
+                        <p>{{ 'article.no_comments'|trans }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Add Comment Form -->
+            {% if app.user %}
+                <div class="add-comment-section">
+                    <h4 class="add-comment-title">
+                        <i class="fas fa-plus-circle"></i>
+                        {{ 'article.add_comment'|trans }}
+                    </h4>
+                    
+                    {{ form_start(commentForm, {'attr': {'class': 'comment-form'}}) }}
+                        <div class="form-group">
+                            <label for="comment_content" class="form-label">{{ 'article.your_comment'|trans }}</label>
+                            {{ form_widget(commentForm.content, {'attr': {'class': 'form-control comment-textarea', 'rows': 4, 'placeholder': 'article.your_comment'|trans}}) }}
+                            {{ form_errors(commentForm.content) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit-comment">
+                            <i class="fas fa-paper-plane"></i>
+                            {{ 'article.submit_comment'|trans }}
+                        </button>
+                    {{ form_end(commentForm) }}
+                </div>
+            {% else %}
+                <div class="login-to-comment">
+                    <p>{{ 'article.login_to_comment'|trans }}</p>
+                    <a href="{{ path('app_login', {'_locale': app.request.locale}) }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        {{ 'nav.login'|trans }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="article-actions">
+            <a href="{{ path('app_article_index', {_locale: app.request.locale}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i>
+                {{ 'articles.form_back_link'|trans }}
+            </a>
+
+            {% if app.user and (app.user.id == article.author.id or is_granted('ROLE_ADMIN')) %}
+                <a href="{{ path('app_article_edit', {'id': article.id, _locale: app.request.locale}) }}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i>
+                    {{ 'form.edit'|trans }}
+                </a>
+                <form method="post" action="{{ path('app_article_delete', {'id': article.id, '_locale': app.request.locale}) }}" style="display:inline-block" onsubmit="return confirm('{{ 'msg.confirm_delete'|trans }}');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                    <button class="btn btn-danger" type="submit">
+                        <i class="fas fa-trash"></i>
+                        {{ 'form.delete'|trans }}
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}" dir="{% if app.request.locale == 'ar' %}rtl{% else %}ltr{% endif %}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/app.css?v=4">
+
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@1,400;1,700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body class="{% if app.request.locale == 'ar' %}rtl{% endif %}">
+
+    <!-- Background Animation -->
+    <div class="animated-bg" aria-hidden="true">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+    </div>
+
+    <!-- Top Language Bar -->
+<div class="language-bar">
+    <div class="container">
+        <div class="language-switcher">
+            <span class="language-label">{{ 'nav.language'|trans }}:</span>
+            <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({_locale: 'en'})) }}" 
+               class="lang-link {% if app.request.locale == 'en' %}active{% endif %}">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.11.0/flags/4x3/gb.svg" alt="English"> English
+            </a>
+            <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({_locale: 'fr'})) }}" 
+               class="lang-link {% if app.request.locale == 'fr' %}active{% endif %}">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.11.0/flags/4x3/fr.svg" alt="Français"> Français
+            </a>
+            <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(app.request.query.all)|merge({_locale: 'ar'})) }}" 
+               class="lang-link {% if app.request.locale == 'ar' %}active{% endif %}">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.11.0/flags/4x3/ma.svg" alt="العربية"> العربية
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Navigation -->
+<nav class="navbar navbar-expand-lg navbar-premium">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ path('app_home', {'_locale': app.request.locale}) }}">
+            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" style="height: 40px; border-radius: 8px;">
+            <span style="font-family: var(--font-title-family); color: white; font-weight: bold; font-size: 1.5rem;">{{ 'app.title'|trans }}</span>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('home', {'_locale': app.request.locale}) }}">
+                        <i class="fas fa-home"></i> {{ 'nav.home'|trans }}
+                    </a>
+                </li>
+                
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_article_new', {'_locale': app.request.locale}) }}">
+                            <i class="fas fa-pen-fancy"></i> {{ 'articles.create_btn'|trans }}
+                        </a>
+                    </li>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('admin_dashboard', {'_locale': app.request.locale}) }}">
+                                <i class="fas fa-chart-line"></i> {{ 'nav.dashboard'|trans }}
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            {% if app.user.avatar %}
+                                <img src="{{ asset('uploads/avatars/' ~ app.user.avatar) }}" alt="Avatar" class="rounded-circle border border-2 border-primary" style="width: 32px; height: 32px; object-fit: cover;">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-lg"></i>
+                            {% endif %}
+                            <span>{{ app.user.nickname|default(app.user.email|split('@')[0])|capitalize }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_profile_show', { 'id': app.user.id, '_locale': app.request.locale }) }}">
+                                    <i class="fas fa-id-card me-2"></i> {{ 'nav.profile'|trans }}
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ path('app_logout', {'_locale': app.request.locale}) }}"><i class="fas fa-sign-out-alt me-2"></i> {{ 'nav.logout'|trans }}</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn-nav-link" href="{{ path('app_register', {'_locale': app.request.locale}) }}">
+                            <i class="fas fa-user-plus"></i> {{ 'hero.cta_primary'|trans }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-nav-link-primary" href="{{ path('app_login', {'_locale': app.request.locale}) }}">
+                            <i class="fas fa-sign-in-alt"></i> {{ 'nav.login'|trans }}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main>
+    {% block body %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="footer-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-md-6 mb-4">
+                <h5>{{ 'app.title'|trans }}</h5>
+                <p>{{ 'app.tagline'|trans }}</p>
+            </div>
+            <div class="col-md-6 mb-4">
+                <h5>{{ 'footer.follow'|trans }}</h5>
+                <div class="social-links justify-content-center">
+                    <a href="https://www.linkedin.com/in/med-amine-ouhaddine-7178b1357/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/Only-Lord-AS" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        {% if app.user %}
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8 col-lg-6">
+                    <a href="{{ path('app_logout', {'_locale': app.request.locale}) }}" class="btn btn-danger w-100 py-2 fw-bold shadow-sm" style="border-radius: 10px; opacity: 0.9; transition: all 0.3s;">
+                        <i class="fas fa-sign-out-alt me-2"></i> {{ 'nav.logout'|trans }}
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <hr>
+        <div class="text-center">
+            <p class="mb-0">
+                {{ 'footer.copyright'|trans|raw }}
+            </p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/mention.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+<section class="page-section" style="padding-top: 100px; padding-bottom: 100px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <!-- Glass Card -->
+                <div class="card bg-glass text-white border-0 shadow-lg position-relative overflow-hidden" style="border-radius: 30px; backdrop-filter: blur(20px); background: rgba(30, 30, 40, 0.6); border: 1px solid rgba(255, 255, 255, 0.1);">
+                    
+                    <!-- Decorate Background -->
+                    <div class="floating-shape shape-1" style="width: 200px; height: 200px; opacity: 0.15; top: -50px; right: -50px;"></div>
+                    <div class="floating-shape shape-2" style="width: 150px; height: 150px; opacity: 0.1; bottom: 50px; left: -30px;"></div>
+
+                    <div class="card-header bg-transparent border-bottom border-light pt-5 pb-4 px-5 text-center" style="border-color: rgba(255,255,255,0.08) !important;">
+                        <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-title-family);">Edit Profile</h2>
+                        <p class="text-white-50 mb-0 small">Update your personal information</p>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        {{ form_start(form) }}
+                        
+                        <!-- Avatar Upload -->
+                        <div class="mb-5 text-center">
+                            <label class="form-label d-block text-white mb-3 fw-bold small text-uppercase ls-1">Profile Picture</label>
+                            <div class="position-relative d-inline-block">
+                                <div class="profile-avatar mb-3" style="width: 120px; height: 120px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.1); overflow: hidden; margin: 0 auto; background: #2a2a3a; box-shadow: 0 8px 20px rgba(0,0,0,0.3);">
+                                    {% if user.avatar %}
+                                        <img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" class="w-100 h-100" style="object-fit: cover;">
+                                    {% else %}
+                                        <div class="d-flex align-items-center justify-content-center w-100 h-100 text-white-50 display-6">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="upload-btn-wrapper position-relative text-center d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-outline-light rounded-pill px-4" type="button" onclick="document.getElementById('{{ form.avatarFile.vars.id }}').click();">
+                                        <i class="fas fa-camera me-2"></i> {% if user.avatar %}Change{% else %}Upload{% endif %}
+                                    </button>
+                                    {% if user.avatar %}
+                                        <button type="submit" formaction="{{ path('app_profile_delete_avatar') }}" formnovalidate onclick="return confirm('Delete profile picture?');" class="btn btn-sm btn-danger rounded-circle" data-bs-toggle="tooltip" title="Remove Photo" style="width: 32px; height: 32px; padding: 0; line-height: 30px;">
+                                            <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
+                                        </button>
+                                    {% endif %}
+                                    {{ form_widget(form.avatarFile, {'attr': {'class': 'd-none'}}) }}
+                                </div>
+                            </div>
+                            {{ form_errors(form.avatarFile) }}
+                        </div>
+
+                        <!-- Banner Upload -->
+                        <div class="mb-5">
+                             <label class="form-label text-white mb-2 fw-bold small text-uppercase ls-1">Cover Banner</label>
+                             <div class="position-relative w-100 rounded-3 overflow-hidden mb-2" style="height: 120px; border: 1px solid rgba(255,255,255,0.1); background: #2a2a3a;">
+                                 {% if user.banner %}
+                                    <img src="{{ asset('uploads/banners/' ~ user.banner) }}" class="w-100 h-100" style="object-fit: cover;">
+                                 {% else %}
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-white-50" style="background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);">
+                                        <span class="small">No banner uploaded</span>
+                                    </div>
+                                 {% endif %}
+                                 
+                                 <div class="position-absolute top-50 start-50 translate-middle d-flex gap-2">
+                                     <button class="btn btn-sm btn-dark bg-opacity-75 rounded-pill border-0 px-3" type="button" onclick="document.getElementById('{{ form.bannerFile.vars.id }}').click();">
+                                        <i class="fas fa-image me-2"></i> {% if user.banner %}Change{% else %}Upload New{% endif %}
+                                     </button>
+                                     {% if user.banner %}
+                                        <button type="submit" formaction="{{ path('app_profile_delete_banner') }}" formnovalidate onclick="return confirm('Delete banner?');" class="btn btn-sm btn-danger rounded-circle bg-opacity-75 border-0" title="Remove Banner" style="width: 32px; height: 32px; padding: 0; line-height: 30px;">
+                                            <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
+                                        </button>
+                                     {% endif %}
+                                 </div>
+                             </div>
+                             {{ form_widget(form.bannerFile, {'attr': {'class': 'd-none'}}) }}
+                             {{ form_errors(form.bannerFile) }}
+                        </div>
+
+                        <!-- Inputs -->
+                        <div class="mb-4">
+                            {{ form_label(form.nickname, 'Display Name', {'label_attr': {'class': 'form-label text-white-75 small text-uppercase fw-bold ls-1'}}) }}
+                            {{ form_widget(form.nickname, {'attr': {'class': 'form-control bg-dark text-white border-secondary rounded-pill px-3 py-2', 'style': 'background: rgba(0,0,0,0.3) !important; border-color: rgba(255,255,255,0.1) !important;'}}) }}
+                            {{ form_errors(form.nickname) }}
+                        </div>
+
+                        <div class="mb-5">
+                            {{ form_label(form.bio, 'Bio', {'label_attr': {'class': 'form-label text-white-75 small text-uppercase fw-bold ls-1'}}) }}
+                            {{ form_widget(form.bio, {'attr': {'class': 'form-control bg-dark text-white border-secondary rounded-3 px-3 py-2', 'rows': '4', 'style': 'background: rgba(0,0,0,0.3) !important; border-color: rgba(255,255,255,0.1) !important;'}}) }}
+                            {{ form_errors(form.bio) }}
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-lg" style="background: var(--primary-gradient); border: none; font-weight: 600;">
+                                Save Profile
+                            </button>
+                            <a href="{{ path('app_profile_show', {id: user.id}) }}" class="btn btn-link text-white-50 text-decoration-none">Cancel</a>
+                        </div>
+                        
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function readURL(input, imgSelector) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.querySelector(imgSelector);
+                if (img) {
+                    img.src = e.target.result;
+                } else {
+                    // If no image exists (placeholder state), we might need to swap the placeholder div for an img or just handle it.
+                    // For now, let's assume the img tag exists or we reload the page.
+                    // But wait, the placeholder is a div with an icon. We should replace the content or logic.
+                    // Simpler approach: reload page or find the wrapper.
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Bind change events
+    var avatarInput = document.getElementById('{{ form.avatarFile.vars.id }}');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function() {
+            // Check if there is an image tag
+            var img = document.querySelector('.profile-avatar img');
+            if (img) {
+                readURL(this, '.profile-avatar img');
+            } else {
+                // Placeholder case: reload to see change after save? 
+                // Or simplistic: Just alert "File Selected".
+                // Better: Create an IMG element.
+                var wrapper = document.querySelector('.profile-avatar');
+                wrapper.innerHTML = '<img class="w-100 h-100" style="object-fit: cover;">';
+                readURL(this, '.profile-avatar img');
+            }
+        });
+    }
+
+    var bannerInput = document.getElementById('{{ form.bannerFile.vars.id }}');
+    if (bannerInput) {
+        bannerInput.addEventListener('change', function() {
+             var img = document.querySelector('.position-relative.rounded-3 img');
+             if (img) {
+                // simple direct selector might be risky, adding class or using context
+                readURL(this, '.position-relative.rounded-3 img');
+             } else {
+                var wrapper = document.querySelector('.position-relative.rounded-3');
+                if (wrapper) {
+                     // The wrapper has content. Replace it.
+                     // But we need to keep the edit buttons? They are absolute positioned.
+                     // The wrapper contains the img/placeholder AND the button wrapper.
+                     // Actually, the placeholder is a sibling of the button wrapper inside the relative parent.
+                     // The HTML structure:
+                     // <div class="position-relative ...">
+                     //    {% if user.banner %} <img ...> {% else %} <div ...>placeholder</div> {% endif %}
+                     //    <div class="position-absolute ...">buttons</div>
+                     // </div>
+                     
+                     // We should target the IMG or the DIV placeholder.
+                     var placeholder = wrapper.querySelector('div.d-flex');
+                     if (placeholder) {
+                        placeholder.style.display = 'none';
+                        var newImg = document.createElement('img');
+                        newImg.className = 'w-100 h-100';
+                        newImg.style.objectFit = 'cover';
+                        newImg.style.position = 'absolute'; // to verify layering
+                        newImg.style.top = '0';
+                        newImg.style.left = '0';
+                        newImg.style.zIndex = '0'; // Behind buttons
+                        wrapper.insertBefore(newImg, wrapper.firstChild);
+                        readURL(this, '.position-relative.rounded-3 img');
+                     }
+                }
+             }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,171 @@
+# English Translations
+app.title: "Speak"
+app.tagline: "The Art of Expression"
+
+# Navigation
+nav.home: "Home"
+nav.articles: "Articles"
+nav.register: "Register"
+nav.login: "Login"
+nav.dashboard: "Admin Dashboard"
+nav.profile: "Profile"
+nav.logout: "Logout"
+nav.language: "Language"
+
+# Hero Section
+hero.title: "Speak"
+hero.subtitle: "The Art of Expression"
+hero.cta_primary: "Get Started"
+hero.cta_secondary: "Sign In"
+
+# Categories Section
+categories.title: "Popular Categories"
+categories.tech: "Technology"
+categories.tech_desc: "Articles about the latest technological innovations"
+categories.travel: "Travel"
+categories.travel_desc: "Explore the world through our travel stories"
+categories.food: "Gastronomy"
+categories.food_desc: "Discover the best recipes and restaurants"
+categories.lifestyle: "Lifestyle"
+categories.lifestyle_desc: "Tips and trends for a better life"
+categories.general: "General"
+categories.general_desc: "Diverse articles on various topics"
+categories.all: "All"
+
+# Articles Section
+articles.title: "Latest Articles"
+articles.empty_title: "No articles available yet"
+articles.empty_message: "Be the first to share your story"
+articles.create_btn: "Create Article"
+articles.read_more: "Read more →"
+articles.by_author: "By %author%"
+articles.published: "Published %date%"
+articles.likes: "Likes"
+articles.comments: "Comments"
+articles.category: "Category"
+
+# Article Form
+articles.form_title: "Create Article"
+articles.form_edit_title: "Edit Article"
+articles.form_title_label: "Title"
+articles.form_title_placeholder: "Enter article title"
+articles.form_content_label: "Content"
+articles.form_content_placeholder: "Write your article content here..."
+articles.form_category_label: "Category"
+articles.form_create_btn: "Create Article"
+articles.form_update_btn: "Update Article"
+articles.form_back_link: "Back to Articles"
+articles.form_cancel_btn: "Cancel"
+
+# Newsletter
+newsletter.title: "Stay Informed"
+newsletter.description: "Subscribe to our newsletter to receive the latest articles directly in your inbox"
+newsletter.placeholder: "Your email address"
+newsletter.submit: "Subscribe"
+newsletter.success: "Thank you for subscribing!"
+
+# Comments Section
+comment.pending: "Awaiting moderation"
+comment.approved: "Approved"
+comment.rejected: "Rejected"
+comment.approve: "Approve"
+comment.reject: "Reject"
+comment.delete: "Delete"
+
+# Admin
+admin.dashboard: "Admin Dashboard"
+admin.comments: "Comments Management"
+admin.users: "Users Management"
+admin.articles: "Articles Management"
+admin.statistics: "Statistics"
+admin.total_articles: "Total Articles"
+admin.total_comments: "Total Comments"
+admin.total_users: "Total Users"
+admin.approved_comments: "Approved Comments"
+admin.pending_comments: "Pending Comments"
+admin.rejected_comments: "Rejected Comments"
+
+# Forms
+form.title: "Title"
+form.content: "Content"
+form.category: "Category"
+form.email: "Email"
+form.password: "Password"
+form.confirm_password: "Confirm Password"
+form.submit: "Submit"
+form.create: "Create"
+form.edit: "Edit"
+form.save: "Save"
+form.delete: "Delete"
+form.cancel: "Cancel"
+
+# Messages
+msg.success: "Operation completed successfully"
+msg.error: "An error occurred. Please try again."
+msg.confirm_delete: "Are you sure you want to delete this item?"
+msg.loading: "Loading..."
+
+# Login & Register
+auth.sign_in: "Please Log In"
+auth.email: "Email"
+auth.password: "Password"
+auth.remember_me: "Remember me"
+auth.sign_in_button: "Log In"
+auth.logged_in_as: "You are logged in as"
+auth.logout_link: "Logout"
+auth.register_title: "Create your account"
+auth.confirm_password: "Confirm Password"
+auth.register_button: "Register"
+auth.already_have_account: "Already have an account?"
+auth.need_account: "Need an account?"
+
+# Footer
+footer.about: "About"
+footer.contact: "Contact"
+footer.terms: "Terms of Service"
+footer.privacy: "Privacy Policy"
+footer.copyright: "All rights reserved to A.S (Ouhaddine MED Amine).<br>© L’École Marocaine des Sciences de l’Ingénieur EMSI ANFA CASABLANCA 2025 - 2026."
+footer.follow: "Follow Us"
+
+# Article Detail Page
+article.detail: "Article Details"
+article.like: "Like"
+article.dislike: "Dislike"
+article.add_comment: "Add a Comment"
+article.your_comment: "Your comment"
+article.submit_comment: "Submit Comment"
+article.no_comments: "No comments yet. Be the first to comment!"
+article.login_to_comment: "Please log in to leave a comment."
+article.login_to_like: "Please log in to like this article."
+article.comment_pending: "Your comment has been submitted and is awaiting moderation."
+article.comment_success: "Your comment has been submitted successfully!"
+
+# Password Strength
+password.strength: "Password Strength"
+password.weak: "Weak"
+password.medium: "Medium"
+password.strong: "Strong"
+password.very_strong: "Very Strong"
+password.hint: "Use at least 8 characters with letters and numbers for a stronger password."
+password.weak_warning: "Warning: Your password is weak. We recommend a stronger password."
+
+# User Interests
+interests.title: "Select Your Interests"
+interests.subtitle: "Help us personalize your experience"
+interests.technology: "Technology"
+interests.travel: "Travel"
+interests.food: "Food & Gastronomy"
+interests.lifestyle: "Lifestyle"
+interests.business: "Business"
+interests.sports: "Sports"
+interests.save: "Save Preferences"
+interests.skip: "Skip for now"
+
+# Flash Messages
+flash.comment_submitted: "Your comment has been submitted and is awaiting approval."
+flash.comment_submitted_auto: "Your comment has been posted successfully!"
+flash.like_added: "Thanks for your feedback!"
+flash.login_required: "Please log in to perform this action."
+flash.article_created: "Article created successfully!"
+flash.article_updated: "Article updated successfully!"
+flash.article_deleted: "Article deleted successfully!"

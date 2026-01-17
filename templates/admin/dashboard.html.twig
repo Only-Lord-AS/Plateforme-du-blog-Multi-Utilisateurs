@@ -1,0 +1,193 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.dashboard'|trans }}{% endblock %}
+
+{% block body %}
+<section class="page-section">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1 class="page-title">
+                    <i class="fas fa-chart-line"></i>
+                    {{ 'admin.dashboard'|trans }}
+                </h1>
+                <p class="page-subtitle">{{ 'admin.statistics'|trans }}</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <a href="{{ path('admin_users', {'_locale': app.request.locale}) }}" class="stat-card stat-card-primary stat-card-link">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ usersCount }}</h3>
+                    <p class="stat-label">{{ 'admin.total_users'|trans }}</p>
+                </div>
+                <div class="stat-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+            
+            <a href="{{ path('app_article_index', {'_locale': app.request.locale}) }}" class="stat-card stat-card-purple stat-card-link">
+                <div class="stat-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ articlesCount }}</h3>
+                    <p class="stat-label">{{ 'admin.total_articles'|trans }}</p>
+                </div>
+                <div class="stat-arrow"><i class="fas fa-chevron-right"></i></div>
+            </a>
+
+            <!-- Replaced Granular Comment Stats with Total Comments -->
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-value">{{ approvedComments + pendingComments + rejectedComments|default(0) }}</h3>
+                    <p class="stat-label">{{ 'admin.total_comments'|trans }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-4 mt-4">
+            <!-- Pie Chart -->
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-pie"></i>
+                        Comments Status
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="commentsPie"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Line Chart -->
+            <div class="col-md-6">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-line"></i>
+                        Platform Growth
+                    </h5>
+                    <div class="chart-container">
+                        <canvas id="growthLine"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bar Chart -->
+            <div class="col-md-12">
+                <div class="chart-card">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-bar"></i>
+                        Global Stats
+                    </h5>
+                    <div class="chart-container chart-container-lg">
+                        <canvas id="statsBar"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
+Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { stepSize: 1 }
+                    },
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                }
+            }
+        });
+    });
+
+/* Pie Chart - Now includes Rejected */
+const approved = {{ approvedComments }};
+const pending = {{ pendingComments }};
+const rejected = {{ rejectedComments|default(0) }};
+const totalComments = approved + pending + rejected;
+
+let pieData = [approved, pending, rejected];
+let pieColors = ['#22c55e', '#f59e0b', '#ef4444'];
+let pieLabels = ['Approved', 'Pending', 'Rejected'];
+
+if (totalComments === 0) {
+    pieData = [1];
+    pieColors = ['rgba(255, 255, 255, 0.1)'];
+    pieLabels = ['No Data'];
+}
+
+new Chart(document.getElementById('commentsPie'), {
+    type: 'doughnut',
+    data: {
+        labels: pieLabels,
+        datasets: [{
+            data: pieData,
+            backgroundColor: pieColors,
+            borderWidth: 0,
+            hoverOffset: 10
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: { padding: 20, font: { size: 14 } }
+            },
+            tooltip: {
+                enabled: totalComments > 0 // Disable tooltip if empty
+            }
+        },
+        cutout: '60%'
+    }
+});
+
+/* Bar Chart */
+new Chart(document.getElementById('statsBar'), {
+    type: 'bar',
+    data: {
+        labels: ['Users', 'Articles', 'Approved', 'Pending', 'Rejected'],
+        datasets: [{
+            label: 'Total Count',
+            data: [{{ usersCount }}, {{ articlesCount }}, {{ approvedComments }}, {{ pendingComments }}, {{ rejectedComments|default(0) }}],
+            backgroundColor: [
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(0, 242, 255, 0.8)',
+                'rgba(34, 197, 94, 0.8)',
+                'rgba(245, 158, 11, 0.8)',
+                'rgba(239, 68, 68, 0.8)'
+            ],
+            borderColor: [
+                '#667eea',
+                '#00f2ff',
+                '#22c55e',
+                '#f59e0b',
+                '#ef4444'
+            ],
+            borderWidth: 2,
+            borderRadius: 8
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+</script>
+{% endblock %}

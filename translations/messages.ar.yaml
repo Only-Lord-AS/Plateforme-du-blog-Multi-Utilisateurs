@@ -1,0 +1,170 @@
+# الترجمات العربية
+app.title: "عَبِّرْ"
+app.tagline: "لِأَنَّ لِكُلِّ صَوْتٍ قِيمَة"
+
+# Navigation
+nav.home: "الرئيسية"
+nav.articles: "المقالات"
+nav.register: "التسجيل"
+nav.login: "دخول"
+nav.dashboard: "لوحة التحكم"
+nav.profile: "الملف الشخصي"
+nav.logout: "تسجيل الخروج"
+nav.language: "اللغة"
+
+# Hero Section
+hero.title: "عَبِّرْ"
+hero.subtitle: "لِأَنَّ لِكُلِّ صَوْتٍ قِيمَة"
+hero.cta_primary: "ابدأ الآن"
+hero.cta_secondary: "دخول"
+
+# Categories Section
+categories.title: "الفئات الشهيرة"
+categories.tech: "التكنولوجيا"
+categories.tech_desc: "مقالات عن أحدث الابتكارات التكنولوجية"
+categories.travel: "السفر"
+categories.travel_desc: "استكشف العالم من خلال قصص رحلاتنا"
+categories.food: "الطعام"
+categories.food_desc: "اكتشف أفضل الوصفات والمطاعم"
+categories.lifestyle: "نمط الحياة"
+categories.lifestyle_desc: "نصائح واتجاهات لحياة أفضل"
+categories.general: "عام"
+categories.general_desc: "مقالات متنوعة عن مواضيع مختلفة"
+categories.all: "الكل"
+
+# Articles Section
+articles.title: "أحدث المقالات"
+articles.empty_title: "لا توجد مقالات متاحة حالياً"
+articles.empty_message: "كن أول من يشارك قصتك"
+articles.create_btn: "إنشاء مقالة"
+articles.read_more: "اقرأ المزيد ←"
+articles.by_author: "بقلم %author%"
+articles.published: "نُشرت في %date%"
+articles.likes: "إعجابات"
+articles.comments: "تعليقات"
+articles.category: "الفئة"
+
+# Article Form
+articles.form_title: "إنشاء مقالة"
+articles.form_edit_title: "تعديل المقالة"
+articles.form_title_label: "العنوان"
+articles.form_title_placeholder: "أدخل عنوان المقالة"
+articles.form_content_label: "المحتوى"
+articles.form_content_placeholder: "اكتب محتوى مقالتك هنا..."
+articles.form_category_label: "الفئة"
+articles.form_create_btn: "إنشاء المقالة"
+articles.form_update_btn: "تحديث"
+articles.form_back_link: "العودة إلى المقالات"
+articles.form_cancel_btn: "إلغاء"
+
+# Newsletter
+newsletter.title: "ابق مطلعاً"
+newsletter.description: "اشترك في نشرتنا الإخبارية لتلقي أحدث المقالات مباشرة في صندوق بريدك"
+newsletter.placeholder: "عنوان بريدك الإلكتروني"
+newsletter.submit: "اشترك"
+newsletter.success: "شكراً لاشتراكك!"
+
+# Comments Section
+comment.pending: "في انتظار المراجعة"
+comment.approved: "موافق عليه"
+comment.rejected: "مرفوض"
+comment.approve: "الموافقة"
+comment.reject: "الرفض"
+comment.delete: "حذف"
+
+# Admin
+admin.dashboard: "لوحة تحكم المشرف"
+admin.comments: "إدارة التعليقات"
+admin.users: "إدارة المستخدمين"
+admin.articles: "إدارة المقالات"
+admin.statistics: "الإحصائيات"
+admin.total_articles: "إجمالي المقالات"
+admin.total_comments: "إجمالي التعليقات"
+admin.total_users: "إجمالي المستخدمين"
+admin.approved_comments: "التعليقات الموافق عليها"
+admin.pending_comments: "التعليقات المعلقة"
+admin.rejected_comments: "التعليقات المرفوضة"
+
+# Forms
+form.title: "العنوان"
+form.content: "المحتوى"
+form.category: "الفئة"
+form.email: "البريد الإلكتروني"
+form.password: "كلمة المرور"
+form.confirm_password: "تأكيد كلمة المرور"
+form.submit: "إرسال"
+form.create: "إنشاء"
+form.edit: "تعديل"
+form.save: "حفظ"
+form.delete: "حذف"
+form.cancel: "إلغاء"
+
+# Messages
+msg.success: "تمت العملية بنجاح"
+msg.error: "حدث خطأ. يرجى المحاولة مرة أخرى."
+msg.confirm_delete: "هل أنت متأكد من رغبتك في حذف هذا العنصر؟"
+msg.loading: "جاري التحميل..."
+
+# Login & Register
+auth.sign_in: "تسجيل الدخول"
+auth.email: "البريد الإلكتروني"
+auth.password: "كلمة المرور"
+auth.remember_me: "تذكرني"
+auth.sign_in_button: "دخول"
+auth.logged_in_as: "أنت مسجل دخول باسم"
+auth.logout_link: "تسجيل الخروج"
+auth.register_title: "إنشاء حسابك"
+auth.confirm_password: "تأكيد كلمة المرور"
+auth.register_button: "التسجيل"
+auth.already_have_account: "هل لديك حساب بالفعل؟"
+auth.need_account: "هل تحتاج إلى حساب؟"
+
+# Footer
+footer.about: "حول"
+footer.contact: "اتصل"
+footer.terms: "شروط الخدمة"
+footer.privacy: "سياسة الخصوصية"
+footer.copyright: "جميع الحقوق محفوظة لـ A.S (Ouhaddine MED Amine).<br>© L’École Marocaine des Sciences de l’Ingénieur EMSI ANFA CASABLANCA 2025 - 2026."
+footer.follow: "تابعنا"
+
+# Article Detail Page
+article.detail: "تفاصيل المقالة"
+article.like: "أعجبني"
+article.dislike: "لم يعجبني"
+article.add_comment: "إضافة تعليق"
+article.your_comment: "تعليقك"
+article.submit_comment: "إرسال التعليق"
+article.no_comments: "لا توجد تعليقات حتى الآن. كن أول من يعلق!"
+article.login_to_comment: "يرجى تسجيل الدخول لترك تعليق."
+article.login_to_like: "يرجى تسجيل الدخول للإعجاب بهذه المقالة."
+article.comment_pending: "تم إرسال تعليقك وهو في انتظار المراجعة."
+article.comment_success: "تم إرسال تعليقك بنجاح!"
+
+# Password Strength
+password.strength: "قوة كلمة المرور"
+password.weak: "ضعيفة"
+password.medium: "متوسطة"
+password.strong: "قوية"
+password.very_strong: "قوية جداً"
+password.hint: "استخدم 8 أحرف على الأقل مع أرقام وحروف لكلمة مرور أقوى."
+password.weak_warning: "تحذير: كلمة المرور ضعيفة. نوصي بكلمة مرور أقوى."
+
+# User Interests
+interests.title: "اختر اهتماماتك"
+interests.subtitle: "ساعدنا في تخصيص تجربتك"
+interests.technology: "التكنولوجيا"
+interests.travel: "السفر"
+interests.food: "الطعام والمطبخ"
+interests.lifestyle: "نمط الحياة"
+interests.business: "الأعمال"
+interests.sports: "الرياضة"
+interests.save: "حفظ التفضيلات"
+interests.skip: "تخطي الآن"
+
+# Flash Messages
+flash.comment_submitted: "تم إرسال تعليقك وهو في انتظار الموافقة."
+flash.like_added: "شكراً لتقييمك!"
+flash.login_required: "يرجى تسجيل الدخول لتنفيذ هذا الإجراء."
+flash.article_created: "تم إنشاء المقالة بنجاح!"
+flash.article_updated: "تم تحديث المقالة بنجاح!"
+flash.article_deleted: "تم حذف المقالة بنجاح!"
