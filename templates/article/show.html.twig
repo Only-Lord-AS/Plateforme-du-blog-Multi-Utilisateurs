@@ -2,6 +2,13 @@
 
 {% block title %}{{ article.title }} - {{ 'app.title'|trans }}{% endblock %}
 
+{% block meta_description %}{{ article.content|slice(0, 160) }}{% endblock %}
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.content|slice(0, 160) }}{% endblock %}
+{% if article.mediaFilename and article.mediaType == 'image' %}
+    {% block og_image %}{{ asset('uploads/media/' ~ article.mediaFilename) }}{% endblock %}
+{% endif %}
+
 {% block body %}
 <section class="article-detail-section">
     <div class="container">

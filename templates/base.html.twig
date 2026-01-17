@@ -2,14 +2,14 @@
 <html lang="{{ app.request.locale }}" dir="{% if app.request.locale == 'ar' %}rtl{% else %}ltr{% endif %}">
     <title>{% block title %}{{ 'app.title'|trans }}{% endblock %}</title>
 
-    <meta name="description" content="{{ 'app.tagline'|trans }}">
-    <meta name="keywords" content="blog, multi-user, symfony, community, stories">
+    <meta name="description" content="{% block meta_description %}{{ 'app.tagline'|trans }}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}blog, multi-user, symfony, community, stories{% endblock %}">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ 'app.title'|trans }}">
-    <meta property="og:description" content="{{ 'app.tagline'|trans }}">
-    <meta property="og:image" content="{{ asset('images/logo.jpg') }}">
+    <meta property="og:title" content="{% block og_title %}{{ 'app.title'|trans }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ 'app.tagline'|trans }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ asset('images/logo.jpg') }}{% endblock %}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">

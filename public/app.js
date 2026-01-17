@@ -113,7 +113,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
         const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
 
-        const scrolled = (scrollTop / (scrollHeight - clientHeight)) * 100;
+        const scrollRange = scrollHeight - clientHeight;
+        if (scrollRange <= 0) {
+            progressBar.style.width = '0%';
+            return;
+        }
+
+        const scrolled = (scrollTop / scrollRange) * 100;
         progressBar.style.width = scrolled + '%';
     }
 
@@ -155,6 +161,9 @@ document.addEventListener('DOMContentLoaded', function () {
     engagementBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+
             const url = btn.href;
             const type = btn.dataset.type;
 
@@ -182,9 +191,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         dislikeBtn.classList.toggle('active');
                         likeBtn.classList.remove('active');
                     }
+                } else if (response.status === 403) {
+                    alert('Please log in to like/dislike.');
+                } else {
+                    console.error('Action failed');
                 }
             } catch (error) {
                 console.error('Like failed:', error);
+            } finally {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
             }
         });
     });
