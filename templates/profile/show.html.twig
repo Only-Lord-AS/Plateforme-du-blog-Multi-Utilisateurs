@@ -58,7 +58,7 @@
         <p class="text-info mb-2" style="font-size: 0.95rem;">{{ user.email }}</p>
         
         <p class="text-white-50 mb-2" style="font-size: 0.9rem;">
-            Member since {{ user.createdAt|date('F Y') }}
+            Member since <time datetime="{{ user.createdAt|date('Y-m') }}">{{ user.createdAt|date('F Y') }}</time>
         </p>
 
         {% if user.bio %}
@@ -129,18 +129,20 @@
                 <div class="blog-feed-premium d-flex flex-column gap-4">
                     {% for article in articles %}
                          <!-- Reusing the exact card style from Home -->
-                         <div class="blog-card-premium feed-card" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 15px; background: var(--bg-glass); border: 1px solid var(--border-glass);">
+                         <article class="blog-card-premium feed-card" style="display: flex; flex-direction: column; overflow: hidden; border-radius: 15px; background: var(--bg-glass); border: 1px solid var(--border-glass);">
                             
                             <!-- Header -->
                             <div class="card-header-premium" style="padding: 1rem; display: flex; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.02);">
                                 <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white;">
                                     <i class="fas fa-user"></i>
                                 </div>
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 700; font-size: 1rem;">{{ article.author.email|split('@')[0]|capitalize }}</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">{{ article.createdAt|date('d M Y, H:i') }}</div>
-                                </div>
-                                <span class="category-tag-premium" style="font-size: 0.8rem;">{{ article.category.name }}</span>
+                                 <div style="flex: 1;">
+                                     <div style="font-weight: 700; font-size: 1rem;">{{ article.author.email|split('@')[0]|capitalize }}</div>
+                                    <time class="card-date" datetime="{{ article.createdAt|date('Y-m-d H:i') }}" style="font-size: 0.8rem; color: var(--text-muted);">
+                                        {{ article.createdAt|date('d M Y, H:i') }}
+                                    </time>
+                                 </div>
+                                 <span class="category-tag-premium" style="font-size: 0.8rem;">{{ article.category.name }}</span>
                             </div>
 
                             <!-- Image -->
@@ -162,10 +164,10 @@
                                     <span class="text-white"><i class="fas fa-thumbs-up text-info"></i> {{ article.likes|filter(l => l.isLike)|length }}</span>
                                     <span class="text-white"><i class="fas fa-comment"></i> {{ article.comments|filter(c => c.isApproved)|length }}</span>
                                 </div>
-                                <a href="{{ path('app_article_show', {id: article.id}) }}" class="btn btn-sm btn-outline-light rounded-pill">Read More</a>
-                            </div>
-                        </div>
-                    {% endfor %}
+                                 <a href="{{ path('app_article_show', {id: article.id}) }}" class="btn btn-sm btn-outline-light rounded-pill">Read More</a>
+                             </div>
+                         </article>
+                     {% endfor %}
                 </div>
             </div>
         </div>
