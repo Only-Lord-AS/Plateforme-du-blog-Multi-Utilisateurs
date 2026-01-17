@@ -161,9 +161,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     /* 2. Platform Growth (Line Chart) */
-    fetch("{{ path('admin_dashboard_data') }}")
-        .then(response => response.json())
+    fetch("{{ path('admin_dashboard_data', {'_locale': app.request.locale}) }}")
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
         .then(data => {
+            if (!data.labels || data.labels.length === 0) {
+                console.warn('Dashboard data is empty');
+                return;
+            }
             const ctx = document.getElementById('growthLine').getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(0, 242, 255, 0.5)');

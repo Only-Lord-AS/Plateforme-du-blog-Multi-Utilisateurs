@@ -39,28 +39,37 @@ class DashboardController extends AbstractController
 
         $labels = [];
         $articles = [];
+        $users = [];
         $locale = $request->getLocale();
-
-        // Use IntlDateFormatter for localized month names
-        $formatter = new \IntlDateFormatter(
-            $locale,
-            \IntlDateFormatter::MEDIUM,
-            \IntlDateFormatter::NONE,
-            null,
-            null,
-            'MMM yyyy'
-        );
-
         $now = new \DateTimeImmutable();
 
-        // last 6 months
+        // 1. Month Names Fallback for missing 'intl' extension
+        $monthsMap = [
+            'en' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'fr' => ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+            'ar' => ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+        ];
+
+        // 2. Formatting Header Labels
         for ($i = 5; $i >= 0; $i--) {
-            $start = $now->modify("first day of -{$i} month")->setTime(0, 0, 0);
-            $end = $now->modify("last day of -{$i} month")->setTime(23, 59, 59);
+            $date = $now->modify("first day of -{$i} month");
+            $monthNum = (int) $date->format('n') - 1; // 0-11
+            $year = $date->format('Y');
 
-            $labels[] = $formatter->format($start);
+            if (class_exists('\IntlDateFormatter')) {
+                $formatter = new \IntlDateFormatter($locale, \IntlDateFormatter::MEDIUM, \IntlDateFormatter::NONE, null, null, 'MMM yyyy');
+                $labels[] = $formatter->format($date);
+            } else {
+                // Fallback to manual mapping
+                $monthName = $monthsMap[$locale][$monthNum] ?? $monthsMap['en'][$monthNum];
+                $labels[] = "{$monthName} {$year}";
+            }
 
-            $count = (int) $articleRepo->createQueryBuilder('a')
+            // 3. Count Articles
+            $start = $date->setTime(0, 0, 0);
+            $end = $date->modify("last day of this month")->setTime(23, 59, 59);
+
+            $articles[] = (int) $articleRepo->createQueryBuilder('a')
                 ->select('COUNT(a.id)')
                 ->andWhere('a.createdAt BETWEEN :start AND :end')
                 ->setParameter('start', $start)
@@ -68,28 +77,17 @@ class DashboardController extends AbstractController
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            $articles[] = $count;
-        }
-
-        // users series - count users created per month
-        $users = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $start = $now->modify("first day of -{$i} month")->setTime(0, 0, 0);
-            $end = $now->modify("last day of -{$i} month")->setTime(23, 59, 59);
-
-            // Cumulative count up to end of that month
-            $count = (int) $userRepo->createQueryBuilder('u')
+            // 4. Count Users (Cumulative)
+            $users[] = (int) $userRepo->createQueryBuilder('u')
                 ->select('COUNT(u.id)')
                 ->andWhere('u.createdAt <= :end')
                 ->setParameter('end', $end)
                 ->getQuery()
                 ->getSingleScalarResult();
-
-            $users[] = $count;
         }
 
         return new JsonResponse([
-            'labels' => $labels, // Fixed: was missing/mismatched in previous versions
+            'labels' => $labels,
             'articles' => $articles,
             'users' => $users,
         ]);
